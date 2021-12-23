@@ -1,0 +1,18 @@
+version: '3.3'
+services:
+  sftpgo:
+    image: drakkan/sftpgo
+    container_name: sftpgo
+    volumes:
+      - ./volume:/home
+      - ./sftpgodata:/srv/sftpgo
+      - ./sftpgohome:/var/lib/sftpgo
+    ports:
+      - '8880:8080'
+      - '2022:2022'
+      - '2121:2121'
+    environment:
+      - 'SFTPGO_FTPD__BINDINGS__0__PORT=2121'
+      # - 'SFTPGO_FTPD__BINDINGS__0__FORCE_PASSIVE_IP=127.0.0.1'
+      - 'SFTPGO_DEFAULT_ADMIN_USERNAME=mrrobot'
+      - 'SFTPGO_DEFAULT_ADMIN_PASSWORD=mrrobot'

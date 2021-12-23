@@ -1,0 +1,1 @@
+docker run --name some-sftpgo -p 8880:8080 -p 2022:2022 -p 2121:2121 -e SFTPGO_FTPD__BINDINGS__0__PORT=2121  --mount type=bind,source=/home/mrrobot/jenkinser,target=/home -d "drakkan/sftpgo"

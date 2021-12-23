@@ -1,0 +1,84 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "status": 1,
+      "username": "erte",
+      "expiration_date": 0,
+      "password": "$2a$10$hmi5LWvLlnD2.VucsHQC9uwVMZOUeOnahONuaXlA38rRgIsVyBePe",
+      "home_dir": "/home",
+      "uid": 0,
+      "gid": 0,
+      "max_sessions": 0,
+      "quota_size": 0,
+      "quota_files": 0,
+      "permissions": {
+        "/": [
+          "*"
+        ]
+      },
+      "used_quota_size": 0,
+      "used_quota_files": 0,
+      "last_quota_update": 0,
+      "upload_bandwidth": 0,
+      "download_bandwidth": 0,
+      "last_login": 1640266878422,
+      "created_at": 1640266873596,
+      "updated_at": 1640266873596,
+      "filters": {
+        "tls_username": "None",
+        "hooks": {
+          "external_auth_disabled": false,
+          "pre_login_disabled": false,
+          "check_password_disabled": false
+        },
+        "totp_config": {
+          "secret": {}
+        }
+      },
+      "filesystem": {
+        "provider": 0,
+        "s3config": {
+          "access_secret": {}
+        },
+        "gcsconfig": {
+          "credentials": {}
+        },
+        "azblobconfig": {
+          "account_key": {},
+          "sas_url": {}
+        },
+        "cryptconfig": {
+          "passphrase": {}
+        },
+        "sftpconfig": {
+          "password": {},
+          "private_key": {}
+        }
+      }
+    }
+  ],
+  "folders": [],
+  "admins": [
+    {
+      "id": 1,
+      "status": 1,
+      "username": "mrrobot",
+      "password": "$2a$10$CbNCCKBkxBuULaQrkoet4O/mYj/IfOpbY8nCKqLp5BrRigsRppI3S",
+      "permissions": [
+        "*"
+      ],
+      "filters": {
+        "totp_config": {
+          "secret": {}
+        }
+      },
+      "created_at": 1640266838714,
+      "updated_at": 1640266838714,
+      "last_login": 1640266839030
+    }
+  ],
+  "api_keys": [],
+  "shares": [],
+  "version": 10
+}
