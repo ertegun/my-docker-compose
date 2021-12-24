@@ -4,8 +4,10 @@ services:
     image: drakkan/sftpgo
     container_name: sftpgo
     volumes:
-      - ./volume:/home
-      - ./sftpgodata:/srv/sftpgo
+      # - ${VOLUME_1}:/VOLUME_1
+      # - ${VOLUME_2}:/VOLUME_2
+      # - ${VOLUME_3}:/VOLUME_3
+      # - ${VOLUME_4}:/VOLUME_4
       - ./sftpgohome:/var/lib/sftpgo
     ports:
       - '8880:8080'
