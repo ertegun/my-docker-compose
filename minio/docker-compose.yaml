@@ -6,8 +6,8 @@ x-minio-common:
   image: quay.io/minio/minio:RELEASE.2022-01-04T07-41-07Z
   command: server --console-address ":9001" http://minio{1...4}/data{1...2}
   expose:
-    - "9000"
-    - "9001"
+    - "19000:9000"
+    - "19001:9000"
   environment:
     MINIO_ROOT_USER: ${MINIO_ROOT_USER}
     MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
@@ -27,7 +27,15 @@ x-minio-common:
 
 
 
+
+
+
+
 # using nginx reverse proxy, load balancing, you can access
+
+
+
+
 
 
 
@@ -76,6 +84,10 @@ services:
       - minio4
 
 ## By default this config uses default local driver,
+
+
+
+
 
 
 
