@@ -1,0 +1,25 @@
+# See https://www.chirpstack.io/gateway-bridge/install/config/ for a full
+# configuration example and documentation.
+
+[integration.mqtt.auth.generic]
+servers=["tcp://mosquitto:1883"]
+username=""
+password=""
+
+
+# Gateway backend configuration.
+[backend]
+type="basic_station"
+[backend.semtech_udp]
+udp_bind = "0.0.0.0:1700"
+skip_crc_check = false
+fake_rx_time=false
+[backend.concentratord]
+# Check for CRC OK.
+crc_check=true
+[backend.basic_station]
+bind="0.0.0.0:3001"
+tls_cert="/etc/chirpstack-gateway-bridge/certs/chirpstack-gateway-bridge/basicstation/server/basicstation-server.pem"
+tls_key="/etc/chirpstack-gateway-bridge/certs/chirpstack-gateway-bridge/basicstation/server/basicstation-server-key.pem"
+ca_cert="/etc/chirpstack-gateway-bridge/certs/ca/ca.pem"
+
