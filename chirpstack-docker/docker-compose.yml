@@ -15,7 +15,7 @@ services:
     image: chirpstack/chirpstack-application-server:3.17
     restart: always
     ports:
-      - 8080:8080
+      - 8088:8080
     volumes:
       - ./configuration/chirpstack-application-server:/etc/chirpstack-application-server
       - ./certs:/etc/chirpstack-application-server/certs
