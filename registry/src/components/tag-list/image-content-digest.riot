@@ -1,0 +1,60 @@
+<!--
+Copyright (C) 2016-2021 Jones Magloire @Joxit
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<image-content-digest>
+  <div title="{ getTitle(props.image, state.chars) }">{ getDigest(props.image, state.chars) }</div>
+  <script>
+    export default {
+      onMounted(props, state) {
+        this.load(props, state);
+      },
+      onUpdated(props, state) {
+        this.load(props, state);
+      },
+      load(props, state) {
+        if (props.image.digest) {
+          return;
+        }
+        state.chars = -1;
+        props.image.one('content-digest', (digest) => {
+          this.digest = digest;
+          props.image.on('content-digest-chars', this.onResize);
+          props.image.trigger('get-content-digest-chars');
+        });
+        props.image.trigger('get-content-digest');
+      },
+      onResize(chars) {
+        if (chars !== this.state.chars) {
+          this.update({
+            chars
+          });
+        }
+      },
+      getTitle(image, chars) {
+        return chars >= 70 ? '' : (image.digest || '');
+      },
+      getDigest(image, chars) {
+        if (chars >= 70) {
+          return image.digest || '';
+        } else if (chars <= 0) {
+          return '';
+        } else {
+          return image.digest && image.digest.slice(0, chars) + '...';
+        }
+      }
+    }
+  </script>
+</image-content-digest>

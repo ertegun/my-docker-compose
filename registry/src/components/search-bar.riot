@@ -1,0 +1,60 @@
+<search-bar>
+  <material-input placeholder="Search in page"></material-input>
+  <script>
+    import {
+      router
+    } from '@riotjs/route';
+
+    export default {
+      onMounted(props, state) {
+        const input = this.$('input');
+        let value = '';
+        const notify = () => {
+          if (value !== input.value) {
+            props.onSearch(input.value.toLowerCase())
+          }
+          value = input.value;
+        }
+        input.addEventListener('keyup', notify);
+        router.on.value(() => {
+          input.value = '';
+          notify();
+        })
+        window.addEventListener('keydown', e => {
+          // F3 or CTRL + F
+          if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) {
+            // already focused, fallback to default behavior
+            if (document.activeElement === input) {
+              return true;
+            } else {
+              e.preventDefault();
+              input.focus();
+            }
+          }
+        })
+      }
+    }
+
+    export function matchSearch(search, value) {
+      return !search || (value && value.toLowerCase().indexOf(search) >= 0);
+    }
+  </script>
+  <style>
+    :host material-input {
+      position: absolute;
+      top: 0em;
+      right: 64px;
+      max-width: 20%;
+    }
+
+    @media screen and (max-width: 400px) {
+      :host material-input {
+        display: none;
+      }
+    }
+
+    :host material-input input {
+      color: #fff;
+    }
+  </style>
+</search-bar>
