@@ -3,3 +3,6 @@ sftpgo/sftpgohome/sftpgo.db
 libreoffice/.env
 minio/.env
 docker-registry/registry-data/docker/
+
+nginx-proxy-manager/data
+nginx-proxy-manager/letsencrypt
