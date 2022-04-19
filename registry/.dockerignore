@@ -1,0 +1,8 @@
+*
+!dist
+!bin
+!nginx
+!src
+!package.json
+!gulpfile.js
+!favicon.ico

@@ -1,0 +1,22 @@
+version: '3.2'
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql8_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: mrrobot
+      MYSQL_USER: mrrobot
+      MYSQL_PASSWORD: mrrobot
+      TZ: Asia/Istanbul
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 3307:8080
+volumes:
+  mysql8_data:

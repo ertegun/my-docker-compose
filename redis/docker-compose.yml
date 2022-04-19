@@ -1,0 +1,14 @@
+version: '2'
+services:
+  redis:
+    image: "redis:3.2.3"
+    hostname: redis
+  redis-commander:
+    build: https://github.com/joeferner/redis-commander.git
+    # command: --redis-host redis
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    links:
+      - "redis:redis"
+    ports:
+      - "8081:8081"
