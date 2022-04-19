@@ -17,6 +17,6 @@ services:
     image: adminer
     restart: always
     ports:
-      - 4446:8080
+      - 3307:8080
 volumes:
   mysql8_data:
