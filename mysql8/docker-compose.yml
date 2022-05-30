@@ -13,6 +13,8 @@ services:
       MYSQL_USER: mrrobot
       MYSQL_PASSWORD: mrrobot
       TZ: Asia/Istanbul
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE
   adminer:
     image: adminer
     restart: always
