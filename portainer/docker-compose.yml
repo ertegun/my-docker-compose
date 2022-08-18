@@ -4,8 +4,9 @@ services:
     image: portainer/portainer-ce
     restart: always
     ports:
-      - 8000:8000
       - 9000:9000
+      - 8000:8000
+      - 9443:9443
     environment:
       - EDGE_INSECURE_POLL=1
     volumes:
