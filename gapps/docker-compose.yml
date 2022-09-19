@@ -1,0 +1,23 @@
+version: "3.2"
+services:
+  php:
+    build:
+      context: "./php/"
+      # args:
+      #  PHP_VERSION: ${PHP_VERSION}
+    volumes:
+      - ${PROJECT_ROOT}/:/var/www/html/
+      - ./php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+    container_name: php
+  apache:
+    build:
+      context: "./apache/"
+      args:
+        APACHE_VERSION: ${APACHE_VERSION}
+    depends_on:
+      - php
+    ports:
+      - ${PORT}:80
+    volumes:
+      - ${PROJECT_ROOT}/:/var/www/html/
+    container_name: apache
