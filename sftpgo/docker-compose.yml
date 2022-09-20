@@ -1,4 +1,4 @@
-version: '3.3'
+version: "3.3"
 services:
   sftpgo:
     image: drakkan/sftpgo
@@ -12,12 +12,14 @@ services:
       - ${VOLUME_6}:/VOLUME_6
       - ./sftpgohome:/var/lib/sftpgo
     ports:
-      - '8880:8080'
-      - '2022:2022'
-      - '2121:2121'
-      - '50000-50100:50000-50100'
+      - "8880:8080"
+      - "2022:2022"
+      - "2121:2121"
+      - "10080:10080"
+      - "50000-50100:50000-50100"
     environment:
       - "SFTPGO_FTPD__BINDINGS__0__PORT=${SFTPGO_FTPD__BINDINGS__0__PORT}"
       - "SFTPGO_FTPD__BINDINGS__0__FORCE_PASSIVE_IP=${SFTPGO_FTPD__BINDINGS__0__FORCE_PASSIVE_IP}"
       - "SFTPGO_DEFAULT_ADMIN_USERNAME=${SFTPGO_DEFAULT_ADMIN_USERNAME}"
       - "SFTPGO_DEFAULT_ADMIN_PASSWORD=${SFTPGO_DEFAULT_ADMIN_PASSWORD}"
+      - "SFTPGO_WEBDAVD__BINDINGS__0__PORT=10080"
