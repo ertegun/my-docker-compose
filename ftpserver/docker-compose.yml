@@ -1,6 +1,7 @@
 version: "3.3"
 services:
   ftpserver:
+    restart: always
     ports:
       - "2121-2130:2121-2130"
     volumes:
