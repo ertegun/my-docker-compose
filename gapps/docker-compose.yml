@@ -9,6 +9,7 @@ services:
       - ${PROJECT_ROOT}/:/var/www/html/
       - ./php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
     container_name: php
+    restart: always
   apache:
     build:
       context: "./apache/"
@@ -21,3 +22,4 @@ services:
     volumes:
       - ${PROJECT_ROOT}/:/var/www/html/
     container_name: apache
+    restart: always
