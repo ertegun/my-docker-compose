@@ -13,3 +13,7 @@ docker run --rm --volumes-from chirpstack-docker_postgresql_1 -v $(pwd):/backup 
 MATTERMOST BACKUP&RESTORE
 docker run --rm --volumes-from moga -v $(pwd):/backup mattermost/mattermost-preview:latest tar cvf /backup/mattermost-data.tar /mm/mattermost-data
 docker run --rm --volumes-from moga -v $(pwd):/backup mattermost/mattermost-preview:latest tar cvf /backup/mattermost-mysql.tar /var/lib/mysql
+
+docker run --rm --volumes-from mantis_mantisbt_1/mantis_mysql_1 -v $(pwd):/backup mysql:5.7 tar cvf /backup/mantis-data.tar /var/lib/mysql
+
+GUACAMOLE
