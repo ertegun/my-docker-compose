@@ -1,0 +1,52 @@
+version: "2"
+volumes:
+  nextcloud:
+  db:
+  lo-config-volume:
+services:
+  db:
+    image: mariadb
+    restart: always
+    ports:
+      - 7706:3306
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=nextcloud
+      - MYSQL_PASSWORD=nextcloud
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+
+  app:
+    image: nextcloud:22.2.6
+    restart: always
+    ports:
+      - 80:80
+    links:
+      - db
+      - libreoffice-server
+    volumes:
+      - nextcloud:/var/www/html
+    environment:
+      - MYSQL_PASSWORD=nextcloud
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_HOST=db
+
+  libreoffice-server:
+    container_name: libreofficeffice-server
+    image: libreoffice/online:master
+    environment:
+      - domain=${NEXTCLOUD_DOMAIN}
+      - username=${LO_ONLINE_USERNAME}
+      - password=${LO_ONLINE_PASSWORD}
+      - extra_params=${LO_ONLINE_EXTRA_PARAMS}
+      - DONT_GEN_SSL_CERT= 1
+    volumes:
+      - lo-config-volume:/etc/loolwsd
+    cap_add:
+      - MKNOD
+    ports:
+      - 9980:9980
+    restart: unless-stopped
