@@ -14,9 +14,11 @@ services:
     ports:
       - 80:80
     environment:
-      - REGISTRY_TITLE=My Private Docker Registry
+      - REGISTRY_TITLE=NetVAr Docker Registry
       - NGINX_PROXY_PASS_URL=http://registry:5000
       - SINGLE_REGISTRY=true
+      - DELETE_IMAGES=true
+      - SHOW_CONTENT_DIGEST=false
     depends_on:
       - registry
     networks:
