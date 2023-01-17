@@ -5,3 +5,4 @@ minio/.env
 wordpress/.env
 nextcloud-libreoffice/.env
 joxit-registry/registry-data/
+joxit-registry/registry-config/htpasswd
