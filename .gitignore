@@ -4,3 +4,4 @@ libreoffice/.env
 minio/.env
 wordpress/.env
 nextcloud-libreoffice/.env
+joxit-registry/registry-data/
