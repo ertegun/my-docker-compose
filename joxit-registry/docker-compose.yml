@@ -12,7 +12,7 @@ services:
   ui:
     image: joxit/docker-registry-ui:latest
     ports:
-      - 80:80
+      - 8011:80
     environment:
       - REGISTRY_TITLE=NetVAr Docker Registry
       - NGINX_PROXY_PASS_URL=http://registry:5000
