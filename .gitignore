@@ -3,6 +3,7 @@ sftpgo/sftpgohome/sftpgo.db
 libreoffice/.env
 minio/.env
 wordpress/.env
+wordpress-blog/.env
 nextcloud-libreoffice/.env
 joxit-registry/registry-data/
 joxit-registry/registry-config/htpasswd
