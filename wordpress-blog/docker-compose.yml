@@ -3,12 +3,12 @@ services:
   db:
     image: mysql:8.0
     volumes:
-      - gruparge_db_data:/var/lib/mysql
+      - sp_blog_db:/var/lib/mysql
     restart: always
     command:
       - --default-authentication-plugin=mysql_native_password
       - --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
-      # - --max_connections=100
+      # - --max_connections=10000
       - --skip-log-bin
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -20,7 +20,7 @@ services:
       - db
     image: wordpress:latest
     volumes:
-      - gruparge_wordpress_data:/var/www/html
+      - sp_blog_wordpress_data:/var/www/html
       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
     ports:
       - "8010:80"
@@ -31,5 +31,5 @@ services:
       WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
 volumes:
-  gruparge_db_data: {}
-  gruparge_wordpress_data: {}
+  sp_blog_db: {}
+  sp_blog_wordpress_data: {}
