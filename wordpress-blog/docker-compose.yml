@@ -23,7 +23,7 @@ services:
       - sp_blog_wordpress_data:/var/www/html
       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
     ports:
-      - "8112:80"
+      - "8113:80"
     restart: always
     environment:
       WORDPRESS_DB_HOST: db
