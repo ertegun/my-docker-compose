@@ -2,10 +2,12 @@ version: "3.2"
 services:
   db:
     image: mysql
+    networks:
+      - network1
     command:
       - --default-authentication-plugin=mysql_native_password
       - --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
-      - --max_connections=10000
+      # - --max_connections=1000
       - --skip-log-bin
     restart: always
     ports:
@@ -26,3 +28,7 @@ services:
       - 3307:8080
 volumes:
   mysql8_data:
+networks:
+  network1:
+    name: sp_mysql_cluster
+    external: true
