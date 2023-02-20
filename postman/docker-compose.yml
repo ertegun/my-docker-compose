@@ -1,0 +1,9 @@
+version: "3.3"
+services:
+  hoppscotch:
+    container_name: hoppscotch
+    ports:
+      - "3000:3000"
+    image: "hoppscotch/hoppscotch:latest"
+    volumes:
+      - ./.env:/app/.env
