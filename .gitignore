@@ -14,3 +14,4 @@ innodb-cluster/volume3
 innodb-cluster/volumesrouter
 MeshCentral/meshcentral
 MeshCentral/.env
+mongodb/.env
