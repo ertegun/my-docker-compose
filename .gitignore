@@ -7,3 +7,10 @@ wordpress-blog/.env
 nextcloud-libreoffice/.env
 joxit-registry/registry-data/
 joxit-registry/registry-config/htpasswd
+mongodb/volume
+innodb-cluster/volume1
+innodb-cluster/volume2
+innodb-cluster/volume3
+innodb-cluster/volumesrouter
+MeshCentral/meshcentral
+MeshCentral/.env
