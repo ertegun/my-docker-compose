@@ -12,9 +12,9 @@ services:
       - --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
       - --max_execution_time=300
       # - --net_buffer_length=8K
-      - --key_buffer_size=128M
-      - --tmp_table_size=64M
-      - --innodb_buffer_pool_size=256M
+      - --key_buffer_size=256M
+      - --tmp_table_size=128M
+      - --innodb_buffer_pool_size=512M
       # - --max_connections=100
       - --skip-log-bin
     environment:
