@@ -1,0 +1,10 @@
+version: "3.2"
+services:
+  gapps:
+    # build: .
+    image: erte33/gapps
+    volumes:
+      - ./${SOURCE_PATH}/:/app/software
+    # restart: always
+    ports:
+      - ${PORT}:6499
