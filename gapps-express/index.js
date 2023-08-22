@@ -10,10 +10,13 @@ var Datastore = require("nedb"),
 const cheerio = require("cheerio");
 // Klasör yolunu belirleyin
 const klasorYolu = path.join(__dirname, process.env.SOURCE_PATH);
+console.log(klasorYolu);
 
-// Klasördeki dosyaları listeleme
 app.get("/", (req, res) => {
+  console.log("request root");
   fs.readdir(klasorYolu, (err, dosyalar) => {
+    console.log("request file list");
+
     if (err) {
       console.error(err);
       return res.status(500).send("software klasörü okunamadı.");
@@ -27,7 +30,6 @@ app.get("/", (req, res) => {
           return;
         }
         let fileOrDir = "";
-        //klasör dosya listesini
         db.ensureIndex({ fieldName: "file", unique: true }, function (err) {});
         if (stats.isFile()) {
           fileOrDir = "file";
@@ -74,15 +76,16 @@ app.get("/software/:dosyaAdi/file", (req, res) => {
 
 app.get("/software/:klasor_adi/publish.htm", (req, res) => {
   const klasor_adi = req.params.klasor_adi;
+  console.log(klasor_adi);
   res.sendFile(path.join(__dirname, "software", klasor_adi + "/publish.htm"));
 });
 
-app.get("/software/:klasor_adi/:exe_adi", (req, res) => {
-  const dosyaAdi = req.params.klasor_adi;
-  const exe_adi = req.params.exe_adi;
-  const dosyaYolu = path.join(klasorYolu, dosyaAdi + "/" + exe_adi);
+app.get("/software/:klasor_adi/:exe_adi.exe", (req, res) => {
+  const klasor_adi = req.params.klasor_adi;
+  const exe_adi = req.params.exe_adi + ".exe";
+  const dosyaYolu = path.join(klasorYolu, klasor_adi + "/" + exe_adi);
 
-  let htmlPath = `${__dirname}/software/${dosyaAdi}/publish.htm`;
+  let htmlPath = `${__dirname}/software/${klasor_adi}/publish.htm`;
   fs.readFile(htmlPath, "utf8", (err, data) => {
     if (err) {
       console.error("Dosya okuma hatası:", err);
@@ -98,15 +101,17 @@ app.get("/software/:klasor_adi/:exe_adi", (req, res) => {
       })
       .get();
 
-    res.download(dosyaYolu, dosyaAdi + "-" + cellTexts[3] + ".exe", (err) => {
-      console.log(`${dosyaAdi} indirildi.`);
+    res.download(dosyaYolu, klasor_adi + "-" + cellTexts[3] + ".exe", (err) => {
       if (err) {
         console.error(err);
         return res.status(500).send("Dosya indirme hatası.");
       }
+      console.log(`${klasor_adi} indirildi.`);
     });
   });
 });
+
+app.use("/software", express.static(path.join(__dirname, "software")));
 
 app.listen(port, () => {
   console.log(`Uygulama http://localhost:${port} adresinde çalışıyor.`);
