@@ -11,9 +11,9 @@ services:
       - --skip-log-bin
     restart: always
     ports:
-      - 3306:3306
+      - 4445:3306
     volumes:
-      - mysql8_data:/var/lib/mysql
+      - ./mysql8data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: mrrobot
       MYSQL_USER: mrrobot
@@ -25,9 +25,7 @@ services:
     image: adminer
     restart: always
     ports:
-      - 3307:8080
-volumes:
-  mysql8_data:
+      - 4446:8080
 networks:
   network1:
     name: sp_mysql_cluster
