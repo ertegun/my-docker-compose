@@ -3,11 +3,12 @@ version: "3"
 services:
   rabbitmq:
     image: "rabbitmq:3-management"
+    container_name: sp-rabbitmq
     networks:
       - network1
     ports:
-      - "5672:5672" # RabbitMQ port
-      - "4449:15672" # RabbitMQ management UI port
+      # - "5672:5672" # RabbitMQ port
+      - "${RABBITMQ_UI_PORT}:15672" # RabbitMQ management UI port
     environment:
       RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE} # Özel bir erlang cookie belirleyin
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER} # Kullanıcı adınızı belirleyin
