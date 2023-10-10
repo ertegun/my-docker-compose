@@ -1,29 +1,34 @@
-version: "3.1"
+version: "3"
 services:
   mongo:
-    image: mongo
+    image: mongo:4.4.25
+    restart: always
     networks:
       - network1
-    restart: always
-    # ports:
-    #   - ${MONGO_PORT}:27017
+    container_name: sp-mongodb
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
     volumes:
-      - ./volume/data:/data/db
-      # - ./volume/config:/data/configdb
+      - sp-mongo-data:/data/db
   mongo-express:
     image: mongo-express
+    restart: always
+    container_name: sp-mongo-express
     networks:
       - network1
-    restart: always
     ports:
-      - ${MONGO_EXPRESS_PORT}:8081
+      - "${MONGO_EXPRESS_PORT}:8081"
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${ME_CONFIG_MONGODB_ADMINUSERNAME}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${ME_CONFIG_MONGODB_ADMINPASSWORD}
-      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: true
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGODB_ROOT_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGODB_ROOT_PASSWORD}
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USER}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD}
+volumes:
+  sp-mongo-data:
 networks:
   network1:
     name: sp_mysql_cluster
