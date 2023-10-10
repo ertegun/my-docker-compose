@@ -1,0 +1,169 @@
+version: "3"
+services:
+  sp-iot:
+    image: "erte33/sp-iot:latest"
+    # restart: always
+    depends_on:
+      - mysql
+      - rabbitmq
+      - mongo
+    networks:
+      - spnet
+    ports:
+      - "4444:4444/tcp"
+      - "4444:4444/udp"
+      - "54739:54739/tcp"
+      - "54739:54739/udp"
+    environment:
+      RabbitMQ__HostName: rabbitmq
+      RabbitMQ__UserName: ${RABBITMQ_DEFAULT_USER}
+      RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
+      LogType__RabbitMQ: ${LogType__RabbitMQ}
+      LogType__File: ${LogType__File}
+      TZ: ${TZ}
+      ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      DOTNET_RUNNING_IN_CONTAINER: ${DOTNET_RUNNING_IN_CONTAINER}
+      DOTNET_VERSION: ${DOTNET_VERSION}
+      ASPNET_VERSION: ${ASPNET_VERSION}
+  sp-rabbitmqtodb:
+    image: "erte33/sp-rabbitmqtodb:latest"
+    # restart: always
+    depends_on:
+      - mysql
+      - rabbitmq
+      - mongo
+    networks:
+      - spnet
+    environment:
+      RabbitMQ__HostName: rabbitmq
+      RabbitMQ__UserName: ${RABBITMQ_DEFAULT_USER}
+      RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
+      RabbitMQ__PreFetchCount__mail: 10
+      RabbitMQ__PreFetchCount__modemlog: 1500
+      RabbitMQ__PreFetchCount__mysqlsingle: 10
+      RabbitMQ__PreFetchCount__mysqlbulk: 1000
+      RabbitMQ__PreFetchCount__mddbulk: 500
+      RabbitMQ__PreFetchCount__instantvaluesbulk: 500
+      RabbitMQ__PreFetchCount__exportindexbulk: 50
+      RabbitMQ__PreFetchCount__gprssignalqualitybulk: 50
+      RabbitMQ__PreFetchCount__harmonicsthdbulk: 50
+      RabbitMQ__PreFetchCount__harmonicscurrentspectrumbulk: 50
+      RabbitMQ__PreFetchCount__harmonicsvoltagespectrumbulk: 50
+      RabbitMQ__PreFetchCount__pvabulk: 500
+      RabbitMQ__PreFetchCount__pvasingle: 20
+      LogType__RabbitMQ: ${LogType__RabbitMQ}
+      LogType__File: ${LogType__File}
+      TZ: ${TZ}
+      ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306
+      ModemLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
+      ServiceLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
+      ModemLogDatabaseSettings__DatabaseName: "SmartPowerLog"
+      ServiceLogDatabaseSettings__DatabaseName: "SmartPowerLog"
+      ModemLogDatabaseSettings__ModemLogCollectionName: "ModemLog"
+      ServiceLogDatabaseSettings__ServiceLogCollectionName: "ServiceLog"
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      DOTNET_RUNNING_IN_CONTAINER: ${DOTNET_RUNNING_IN_CONTAINER}
+      DOTNET_VERSION: ${DOTNET_VERSION}
+      ASPNET_VERSION: ${ASPNET_VERSION}
+  sp-taskscheduler:
+    image: "erte33/sp-taskscheduler:latest"
+    # restart: always
+    depends_on:
+      - mysql
+      - rabbitmq
+      - mongo
+    networks:
+      - spnet
+    environment:
+      # LogType__RabbitMQ: ${LogType__RabbitMQ}
+      LogType__File: true
+      TZ: ${TZ}
+      ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306
+      DOTNET_RUNNING_IN_CONTAINER: ${DOTNET_RUNNING_IN_CONTAINER}
+      DOTNET_VERSION: ${DOTNET_VERSION}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      ASPNET_VERSION: ${ASPNET_VERSION}
+  mysql:
+    image: mysql:8.0.33
+    networks:
+      - spnet
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+      # - --max_connections=1000
+      - --skip-log-bin
+    # restart: always
+    # ports:
+    #   - 4445:3306
+    volumes:
+      - sp-mysql8-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: ${TZ}
+    cap_add:
+      - SYS_NICE # CAP_SYS_NICE
+  phpmyadmin:
+    image: phpmyadmin
+    # restart: always
+    depends_on:
+      - mysql
+    networks:
+      - spnet
+    ports:
+      - 4446:80
+    environment:
+      PMA_ARBITRARY: 1
+      UPLOAD_LIMIT: 10M
+      # PMA_HOST: db
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    networks:
+      - spnet
+    ports:
+      # - "5672:5672" # RabbitMQ port dışarı açmaya gerek yok
+      - "${RABBITMQ_UI_PORT}:15672" # RabbitMQ management UI port
+    environment:
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE} # Özel bir erlang cookie belirleyin
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER} # Kullanıcı adınızı belirleyin
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS} # Şifrenizi belirleyin
+    volumes:
+      - sp-rabbitmq-data:/var/lib/rabbitmq # Verileri saklamak için bir volume oluşturun
+  mongo:
+    image: mongo:4.4.25
+    restart: always
+    networks:
+      - spnet
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
+    volumes:
+      - sp-mongo-data:/data/db
+  mongo-express:
+    image: mongo-express
+    # restart: always
+    depends_on:
+      - mongo
+    container_name: sp-mongo-express
+    networks:
+      - spnet
+    ports:
+      - "${MONGO_EXPRESS_PORT}:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: true
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGODB_ROOT_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGODB_ROOT_PASSWORD}
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USER}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD}
+networks:
+  spnet:
+    name: sp_mysql_cluster
+    external: true
+volumes:
+  sp-mysql8-data: null
+  sp-rabbitmq-data: null
+  sp-mongo-data: null
