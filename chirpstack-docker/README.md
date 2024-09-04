@@ -4,18 +4,18 @@ This repository contains a skeleton to setup the [ChirpStack](https://www.chirps
 open-source LoRaWAN Network Server stack using [Docker Compose](https://docs.docker.com/compose/).
 
 **Note:** Please use this `docker-compose.yml` file as a starting point for testing
-but keep in mind that for production usage it might need modifications. 
+but keep in mind that for production usage it might need modifications.
 
 ## Directory layout
 
-* `docker-compose.yml`: the docker-compose file containing the services
-* `docker-compose-env.yml`: alternate docker-compose file using environment variables, can be run with the docker-compose `-f` flag
-* `configuration/chirpstack*`: directory containing the ChirpStack configuration files, see:
-    * https://www.chirpstack.io/gateway-bridge/install/config/
-    * https://www.chirpstack.io/network-server/install/config/
-    * https://www.chirpstack.io/application-server/install/config/
-    * https://www.chirpstack.io/geolocation-server/install/config/
-* `configuration/postgresql/initdb/`: directory containing PostgreSQL initialization scripts
+- `docker-compose.yml`: the docker-compose file containing the services
+- `docker-compose-env.yml`: alternate docker-compose file using environment variables, can be run with the docker-compose `-f` flag
+- `configuration/chirpstack*`: directory containing the ChirpStack configuration files, see:
+  - https://www.chirpstack.io/gateway-bridge/install/config/
+  - https://www.chirpstack.io/network-server/install/config/
+  - https://www.chirpstack.io/application-server/install/config/
+  - https://www.chirpstack.io/geolocation-server/install/config/
+- `configuration/postgresql/initdb/`: directory containing PostgreSQL initialization scripts
 
 ## Configuration
 
@@ -44,9 +44,8 @@ $ docker-compose up
 
 **Note:** during the startup of services, it is normal to see the following errors:
 
-* ping database error, will retry in 2s: dial tcp 172.20.0.4:5432: connect: connection refused
-* ping database error, will retry in 2s: pq: the database system is starting up
-
+- ping database error, will retry in 2s: dial tcp 172.20.0.4:5432: connect: connection refused
+- ping database error, will retry in 2s: pq: the database system is starting up
 
 After all the components have been initialized and started, you should be able
 to open http://localhost:8080/ in your browser.
@@ -56,3 +55,34 @@ to open http://localhost:8080/ in your browser.
 When adding the Network Server in the ChirpStack Application Server web-interface
 (see [Network Servers](https://www.chirpstack.io/application-server/use/network-servers/)),
 you must enter `chirpstack-network-server:8000` as the Network Server `hostname:IP`.
+
+## BACKUP
+
+docker run --rm --volumes-from chirpstack-docker_redis_1 -v $(pwd):/backup redis:5-alpine tar cvf /backup/redis_backup.tar /data
+docker run --rm --volumes-from chirpstack-docker_postgresql_1 -v $(pwd):/backup postgres:9.6-alpine tar cvf /backup/postgresql_backup.tar /var/lib/postgresql/data
+docker run --rm --volumes-from chirpstack-docker_postgresql_1 -v $(pwd):/backup postgres:9.6-alpine tar cvf /backup/postgresql_backup2.tar /docker-entrypoint-initdb.d
+docker run --rm --volumes-from chirpstack-docker_mosquitto_1 -v $(pwd):/backup eclipse-mosquitto:2 tar cvf /backup/chirpstack-docker_mosquitto_1_conf.tar /mosquitto/config/mosquitto.conf
+docker run --rm --volumes-from chirpstack-docker_mosquitto_1 -v $(pwd):/backup eclipse-mosquitto:2 tar cvf /backup/chirpstack-docker_mosquitto_1_data.tar /mosquitto/data
+docker run --rm --volumes-from chirpstack-docker_mosquitto_1 -v $(pwd):/backup eclipse-mosquitto:2 tar cvf /backup/chirpstack-docker_mosquitto_1_log.tar /mosquitto/log
+
+tar cvf certs.tar certs
+tar cvf configuration.tar configuration
+
+## RESTORE
+
+docker run --rm --volumes-from chirpstack-docker-redis-1 -v $(pwd):/backup redis:5-alpine ash -c "cd /data && tar xvf /backup/redis_backup.tar --strip 1"
+docker run --rm --volumes-from chirpstack-docker-postgresql-1 -v $(pwd):/backup postgres:9.6-alpine ash -c "cd /var/lib/postgresql/data && tar xvf /backup/postgresql_backup.tar --strip 4"
+docker run --rm --volumes-from chirpstack-docker-postgresql-1 -v $(pwd):/backup postgres:9.6-alpine ash -c "cd /docker-entrypoint-initdb.d && tar xvf /backup/postgresql_backup2.tar --strip 1"
+docker run --rm --volumes-from chirpstack-docker-mosquitto-1 -v $(pwd):/backup eclipse-mosquitto:2 ash -c "cd /mosquitto/data && tar xvf /backup/chirpstack-docker_mosquitto_1_data.tar --strip 2"
+docker run --rm --volumes-from chirpstack-docker-mosquitto-1 -v $(pwd):/backup eclipse-mosquitto:2 ash -c "cd /mosquitto/log && tar xvf /backup/chirpstack-docker_mosquitto_1_log.tar --strip 2"
+
+tar xvf certs.tar
+tar xvf configuration.tar
+
+--strip X => volume yolunda X tane içiçe klasör varsa
+
+docker run --rm --volumes-from chirpstack-docker-redis-1 -v D:\GitHub\my-docker-compose\chirpstack-docker:/backup redis:5-alpine ash -c "cd /data && tar xvf /backup/redis_backup.tar --strip 1"
+docker run --rm --volumes-from chirpstack-docker-postgresql-1 -v D:\GitHub\my-docker-compose\chirpstack-docker:/backup postgres:9.6-alpine ash -c "cd /var/lib/postgresql/data && tar xvf /backup/postgresql_backup.tar --strip 4"
+docker run --rm --volumes-from chirpstack-docker-postgresql-1 -v D:\GitHub\my-docker-compose\chirpstack-docker:/backup postgres:9.6-alpine ash -c "cd /docker-entrypoint-initdb.d && tar xvf /backup/postgresql_backup2.tar --strip 1"
+docker run --rm --volumes-from chirpstack-docker-mosquitto-1 -v D:\GitHub\my-docker-compose\chirpstack-docker:/backup eclipse-mosquitto:2 ash -c "cd /mosquitto/data && tar xvf /backup/chirpstack-docker_mosquitto_1_data.tar --strip 2"
+docker run --rm --volumes-from chirpstack-docker-mosquitto-1 -v D:\GitHub\my-docker-compose\chirpstack-docker:/backup eclipse-mosquitto:2 ash -c "cd /mosquitto/log && tar xvf /backup/chirpstack-docker_mosquitto_1_log.tar --strip 2"
