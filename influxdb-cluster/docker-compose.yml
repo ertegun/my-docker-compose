@@ -1,0 +1,49 @@
+version: "3"
+services:
+  influxdb1:
+    image: quay.io/influxdb/influxdb:v2.0.7
+    container_name: influxdb1
+    restart: always
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./influxdb1:/var/lib/influxdb
+    environment:
+      - INFLUXDB_DB=db1
+      - INFLUXDB_HTTP_AUTH_ENABLED=true
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=adminpassword
+
+  influxdb2:
+    image: quay.io/influxdb/influxdb:v2.0.7
+    container_name: influxdb2
+    restart: always
+    ports:
+      - "9999:9999"
+    volumes:
+      - ./influxdb2:/root/.influxdbv2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=adminpassword
+      - DOCKER_INFLUXDB_INIT_ORG=myorg
+      - DOCKER_INFLUXDB_INIT_BUCKET=mybucket
+      - DOCKER_INFLUXDB_INIT_RETENTION=30d
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=mytoken
+
+  influxdb3:
+    image: quay.io/influxdb/influxdb:v2.0.7
+    container_name: influxdb3
+    restart: always
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./influxdb3:/root/.influxdbv2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=adminpassword
+      - DOCKER_INFLUXDB_INIT_ORG=myorg
+      - DOCKER_INFLUXDB_INIT_BUCKET=mybucket
+      - DOCKER_INFLUXDB_INIT_RETENTION=30d
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=mytoken
