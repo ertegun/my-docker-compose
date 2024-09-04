@@ -1,7 +1,8 @@
 version: "3.2"
 services:
   db:
-    image: mysql
+    image: mysql:8.0.33
+    # container_name: db
     networks:
       - network1
     command:
@@ -11,7 +12,7 @@ services:
       - --skip-log-bin
     restart: always
     ports:
-      - 4445:3306
+      - 3306:3306
     volumes:
       - ./mysql8data:/var/lib/mysql
     environment:
@@ -21,11 +22,16 @@ services:
       TZ: Asia/Istanbul
     cap_add:
       - SYS_NICE # CAP_SYS_NICE
-  adminer:
-    image: adminer
+  phpmyadmin:
+    image: phpmyadmin
+    networks:
+      - network1
     restart: always
     ports:
-      - 4446:8080
+      - 4446:80
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: db
 networks:
   network1:
     name: sp_mysql_cluster
