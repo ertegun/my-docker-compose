@@ -1,0 +1,38 @@
+version: "3.2"
+services:
+  php:
+    image: erte33/sp-php74:latest
+    restart: on-failure:3
+    env_file:
+      - stack.env
+    volumes:
+      - spweb-volumes:/application
+      # - .env:/application/.env
+    container_name: spweb-php
+    networks:
+      - network1
+  apache:
+    image: erte33/sp-apache
+    restart: on-failure:3
+    env_file:
+      - stack.env
+    depends_on:
+      - php
+    ports:
+      - "${APACHE_PORT}:80"
+    volumes:
+      - spweb-volumes:/application
+    container_name: spweb-apache
+    networks:
+      - network1
+networks:
+  network1:
+    name: sp_mysql_cluster
+    external: true
+volumes:
+  spweb-volumes:
+    # driver: local
+    # driver_opts:
+    #   type: none
+    #   o: bind
+    #   device: ./sp-vol
