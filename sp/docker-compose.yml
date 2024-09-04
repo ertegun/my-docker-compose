@@ -2,7 +2,7 @@ version: "3"
 services:
   sp-iot:
     image: "erte33/sp-iot:latest"
-    # restart: always
+    restart: always
     depends_on:
       - mysql
       - rabbitmq
@@ -20,6 +20,28 @@ services:
       RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
       LogType__RabbitMQ: ${LogType__RabbitMQ}
       LogType__File: ${LogType__File}
+      TZ: ${TZ}
+      ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      DOTNET_RUNNING_IN_CONTAINER: ${DOTNET_RUNNING_IN_CONTAINER}
+      DOTNET_VERSION: ${DOTNET_VERSION}
+      ASPNET_VERSION: ${ASPNET_VERSION}
+  sp-websocket:
+    image: "erte33/sp-websocket:latest"
+    container_name: sp-websocket
+    restart: always
+    depends_on:
+      - mysql
+      - rabbitmq
+      - mongo
+    networks:
+      - spnet
+    ports:
+      - "54738:5057"
+    environment:
+      RabbitMQ__HostName: rabbitmq
+      RabbitMQ__UserName: ${RABBITMQ_DEFAULT_USER}
+      RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
       TZ: ${TZ}
       ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306
       ASPNETCORE_URLS: ${ASPNETCORE_URLS}
@@ -52,16 +74,20 @@ services:
       RabbitMQ__PreFetchCount__harmonicsvoltagespectrumbulk: 50
       RabbitMQ__PreFetchCount__pvabulk: 500
       RabbitMQ__PreFetchCount__pvasingle: 20
+      RabbitMQ__PreFetchCount__servicelog: 20
       LogType__RabbitMQ: ${LogType__RabbitMQ}
       LogType__File: ${LogType__File}
       TZ: ${TZ}
       ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306
       ModemLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
-      ServiceLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
       ModemLogDatabaseSettings__DatabaseName: "SmartPowerLog"
-      ServiceLogDatabaseSettings__DatabaseName: "SmartPowerLog"
       ModemLogDatabaseSettings__ModemLogCollectionName: "ModemLog"
+      ServiceLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
+      ServiceLogDatabaseSettings__DatabaseName: "SmartPowerLog"
       ServiceLogDatabaseSettings__ServiceLogCollectionName: "ServiceLog"
+      TsLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
+      TsLogDatabaseSettings__DatabaseName: "SmartPowerLog"
+      TsLogDatabaseSettings__TsLogCollectionName: "TsLog"
       ASPNETCORE_URLS: ${ASPNETCORE_URLS}
       DOTNET_RUNNING_IN_CONTAINER: ${DOTNET_RUNNING_IN_CONTAINER}
       DOTNET_VERSION: ${DOTNET_VERSION}
@@ -76,14 +102,31 @@ services:
     networks:
       - spnet
     environment:
-      # LogType__RabbitMQ: ${LogType__RabbitMQ}
-      LogType__File: true
       TZ: ${TZ}
       ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306
       DOTNET_RUNNING_IN_CONTAINER: ${DOTNET_RUNNING_IN_CONTAINER}
       DOTNET_VERSION: ${DOTNET_VERSION}
       ASPNETCORE_URLS: ${ASPNETCORE_URLS}
       ASPNET_VERSION: ${ASPNET_VERSION}
+      CheckCosa__CosaEndpointPath: /api/endpoints/getEndpoints
+      CheckCosa__CosaloginPath: /api/users/login
+      CheckCosa__CosaUrl: https://kiwi.cosa.com.tr
+      CheckRelayLockStatus__deviceSatusParamId: 48
+      CheckRelayLockStatus__lockedStatusValue: 4
+      CheckRelayLockStatus__relayLockedAlarmId: 21
+      iot_service_domain: http://sp-iot:4444
+      LogType__File: false
+      LogType__RabbitMQ: ${LogType__RabbitMQ}
+      PROXY_HOST: 192.168.1.1
+      PROXY_PORT: 8080
+      PROXY_SET: 0
+      RabbitMQ__HostName: rabbitmq
+      RabbitMQ__UserName: ${RABBITMQ_DEFAULT_USER}
+      RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
+      RabbitMQ__LogPath: tslog
+      REPORT_TIME_OUT: 30
+      XML_REPORT_SERVLET: http://www.biotekno.biz:8080/SMS-Web/xmlreport
+      XML_SENT_SERVLET: http://www.biotekno.biz:8080/SMS-Web/xmlsms
   mysql:
     image: mysql:8.0.33
     networks:
@@ -93,9 +136,9 @@ services:
       - --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
       # - --max_connections=1000
       - --skip-log-bin
-    # restart: always
-    # ports:
-    #   - 4445:3306
+    restart: always
+    ports:
+      - 4445:3306
     volumes:
       - sp-mysql8-data:/var/lib/mysql
     environment:
@@ -142,7 +185,7 @@ services:
     volumes:
       - sp-mongo-data:/data/db
   mongo-express:
-    image: mongo-express
+    image: mongo-express:0.54
     # restart: always
     depends_on:
       - mongo
