@@ -1,0 +1,25 @@
+version: "3.7"
+services:
+  application:
+    image: mirego/accent
+    container_name: accent
+    ports:
+      - 4000:4000
+    depends_on:
+      - postgresql
+    environment:
+      - PORT=4000
+      - CANONICAL_URL=192.168.20.161
+      - STATIC_URL=192.168.20.161
+      - DATABASE_URL=postgres://postgres@postgresql:5432/accent_development
+  postgresql:
+    image: postgres:10.3
+    container_name: accent-postgres
+    environment:
+      - POSTGRES_DB=accent_development
+    ports:
+      - 5432:5432
+    volumes:
+      - accent_psql:/var/lib/postgresql/data
+volumes:
+  accent_psql:
