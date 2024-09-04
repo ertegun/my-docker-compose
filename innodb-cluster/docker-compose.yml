@@ -1,0 +1,80 @@
+version: "3.3"
+services:
+  mysql-router:
+    container_name: mysql-router
+    ports:
+      - "4445:6446"
+    network_mode: sp_mysql_cluster
+    environment:
+      - MYSQL_HOST=sp_mysql_1
+      - MYSQL_PORT=3306
+      - MYSQL_USER=ga_cluster
+      - MYSQL_PASSWORD=ga_cluster_2023
+      - MYSQL_INNODB_CLUSTER_MEMBERS=3
+    volumes:
+      - "./volumesrouter:/etc/mysqlrouter"
+    image: mysql/mysql-router
+    depends_on:
+      - mysql_server1
+      - mysql_server2
+      - mysql_server3
+
+  mysql_server1:
+    container_name: sp_mysql_1
+    ports:
+      - "44461:3306"
+    hostname: sp_mysql_1
+    restart: always
+    network_mode: sp_mysql_cluster
+    command:
+      - --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+    volumes:
+      - "./volume1:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: Ertesulomuro2023
+      MYSQL_USER: mrrobot
+      MYSQL_PASSWORD: mrrobot
+      TZ: Asia/Istanbul
+    cap_add:
+      - SYS_NICE # CAP_SYS_NICE
+    image: "mysql/mysql-server:8.0"
+  mysql_server2:
+    container_name: sp_mysql_2
+    ports:
+      - "44462:3306"
+    hostname: sp_mysql_2
+    restart: always
+    network_mode: sp_mysql_cluster
+    command:
+      # - --initialize-insecure=OFF
+      - --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+    volumes:
+      - "./volume2:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: Ertesulomuro2023
+      MYSQL_USER: mrrobot
+      MYSQL_PASSWORD: mrrobot
+      TZ: Asia/Istanbul
+    cap_add:
+      - SYS_NICE # CAP_SYS_NICE
+    image: "mysql/mysql-server:8.0"
+  mysql_server3:
+    container_name: sp_mysql_3
+    ports:
+      - "44463:3306"
+    hostname: sp_mysql_3
+    restart: always
+    network_mode: sp_mysql_cluster
+    command:
+      # - --initialize-insecure=OFF
+      - --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+    volumes:
+      - "./volume3:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: Ertesulomuro2023
+      MYSQL_USER: mrrobot
+      MYSQL_PASSWORD: mrrobot
+      TZ: Asia/Istanbul
+    cap_add:
+      - SYS_NICE # CAP_SYS_NICE
+    image: "mysql/mysql-server:8.0"

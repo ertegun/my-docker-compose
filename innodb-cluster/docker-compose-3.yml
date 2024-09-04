@@ -1,0 +1,22 @@
+version: "3.3"
+services:
+  mysql_server3:
+    container_name: sp_mysql_3
+    ports:
+      - "44463:3306"
+    hostname: sp_mysql_3
+    restart: always
+    network_mode: sp_mysql_cluster
+    command:
+      # - --initialize-insecure=OFF
+      - --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+    volumes:
+      - "./volume3:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: Ertesulomuro2023
+      MYSQL_USER: mrrobot
+      MYSQL_PASSWORD: mrrobot
+      TZ: Asia/Istanbul
+    cap_add:
+      - SYS_NICE # CAP_SYS_NICE
+    image: "mysql/mysql-server:8.0"
