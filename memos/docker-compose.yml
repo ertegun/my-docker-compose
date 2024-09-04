@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  memos:
+    image: neosmemo/memos:stable
+    command: --driver mysql --dsn 'root:password@tcp(mysql)/memos_prod'
+    ports:
+      - "5230:5230"
+    volumes:
+      - ./memos/:/var/opt/memos
+    depends_on:
+      mysql:
+        condition: service_healthy
+  mysql:
+    image: mysql:8.3.0
+    restart: always
+    command:
+      - --skip-log-bin
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: memos_prod
+    volumes:
+      - memos_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -ppassword"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+volumes:
+  memos_mysql_data:
