@@ -1,0 +1,16 @@
+version: "3"
+services:
+  pi.alert:
+    network_mode: host
+    ports:
+      - "20211:20211"
+    volumes:
+      - pialert-config:/home/pi/pialert/config
+      - pialert-db:/home/pi/pialert/db
+    environment:
+      - TZ=Europe/Berlin
+      - PORT=20211
+    image: jokobsk/pi.alert:latest
+volumes:
+  pialert-config:
+  pialert-db:
