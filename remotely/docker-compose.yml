@@ -1,0 +1,10 @@
+version: "2"
+services:
+  remotely:
+    image: immybot/remotely:preview
+    ports:
+      - 5001:5000
+    volumes:
+      - ./data:/remotely-data
+    environment:
+      TZ: Asia/Istanbul
