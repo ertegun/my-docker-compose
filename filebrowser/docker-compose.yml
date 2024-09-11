@@ -1,0 +1,20 @@
+services:
+  filebrowser:
+    image: filebrowser/filebrowser:s6
+    container_name: filebrowser
+    ports:
+      - "8080:80" # FileBrowser'a 8080 portu üzerinden erişim sağlanacak
+    volumes:
+      - ./data:/srv # Kendi bilgisayarındaki `data` dizinini container'ın içindeki `/srv` dizinine bağla
+      - filebrowser-db:/database # Veritabanı dosyasını saklamak için
+      - filebrowser-config:/config
+    environment:
+      - FB_BASEURL=/ # FileBrowser için temel URL ayarı (opsiyonel)
+      - FB_PORT=80 # FileBrowser servisi için port (opsiyonel)
+    restart: unless-stopped
+networks:
+  default:
+    driver: bridge
+volumes:
+  filebrowser-config:
+  filebrowser-db:
