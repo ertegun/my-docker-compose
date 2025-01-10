@@ -20,3 +20,4 @@ domain-router/node_modules
 mysql8/mysql8data
 zimbra-dcoker-image/zcs-8.8.15_GA_4179.UBUNTU20_64.20211118033954
 homer/
+portainer/portainer_data
