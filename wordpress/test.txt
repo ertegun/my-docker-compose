@@ -1,0 +1,57 @@
+[vc_row]
+  [vc_column width='1/4']
+    [vc_column_text][serdenci_zoom][/vc_column_text]
+  [/vc_column]
+  [vc_column width='3/4']
+    [ultimate_heading main_heading='Ethernet Terminal']Ürün Adı: [acf field='urun_adi'] Ürün Kodu: [acf field='urun_kodu'][/ultimate_heading]
+    [vc_row_inner content_placement='bottom' gap='5']
+      [vc_column_inner width='1/3']
+        [dt_icon_text layout='layout_3' show_link='y' link='url:https%3A%2F%2Ftestwp.gruparge.com%2Fdokumanlar%2Fkullanma-kilavuzlari%2F|target:_blank' 
+          apply_link='icon_title_button' dt_text_title='Kullanım Kılavuzu' dt_text_custom_title_color='#ffffff' dt_text_desc='' show_btn='n' icon_picker='far fa-file-pdf' dt_text_icon_border_width='2px' 
+          dt_text_icon_color='#ffffff' el_class='urun-docs-links']
+      [/vc_column_inner]
+      [vc_column_inner width='1/3']
+        [dt_icon_text layout='layout_3' show_link='y' link='url:https%3A%2F%2Ftestwp.gruparge.com%2Fdokumanlar%2Fkullanma-kilavuzlari%2F|target:_blank' 
+          apply_link='icon_title_button' dt_text_title='Bağlantı Şemaları' dt_text_custom_title_color='#ffffff' dt_text_desc='' show_btn='n' icon_picker='far fa-file-pdf' dt_text_icon_border_width='2px' 
+          dt_text_icon_color='#ffffff' el_class='urun-docs-links']
+      [/vc_column_inner]
+      [vc_column_inner width='1/3']
+        [dt_icon_text layout='layout_3' show_link='y' link='url:https%3A%2F%2Ftestwp.gruparge.com%2Fdokumanlar%2Fkullanma-kilavuzlari%2F|target:_blank' 
+          apply_link='icon_title_button' dt_text_title='Ürün Teknik Çizimleri' dt_text_custom_title_color='#ffffff' dt_text_desc='' show_btn='n' icon_picker='far fa-file-pdf' dt_text_icon_border_width='2px' 
+          dt_text_icon_color='#ffffff' el_class='urun-docs-links']
+      [/vc_column_inner]
+    [/vc_row_inner]
+    [vc_row_inner content_placement='top' gap='5']
+      [vc_column_inner width='1/3']
+        [dt_icon_text layout='layout_3' show_link='y' link='url:https%3A%2F%2Ftestwp.gruparge.com%2Fdokumanlar%2Fkullanma-kilavuzlari%2F|target:_blank' 
+          apply_link='icon_title_button' dt_text_title='Datasheet' dt_text_custom_title_color='#ffffff' dt_text_desc='' show_btn='n' icon_picker='far fa-file-pdf' dt_text_icon_border_width='2px' 
+          dt_text_icon_color='#ffffff' el_class='urun-docs-links']
+      [/vc_column_inner]
+      [vc_column_inner width='1/3']
+        [dt_icon_text layout='layout_3' show_link='y' link='url:https%3A%2F%2Ftestwp.gruparge.com%2Fdokumanlar%2Fkullanma-kilavuzlari%2F|target:_blank' 
+          apply_link='icon_title_button' dt_text_title='Broşür' dt_text_custom_title_color='#ffffff' dt_text_desc='' show_btn='n' icon_picker='far fa-file-pdf' dt_text_icon_border_width='2px' 
+          dt_text_icon_color='#ffffff' el_class='urun-docs-links']
+      [/vc_column_inner]
+      [vc_column_inner width='1/3']
+        [dt_icon_text layout='layout_3' show_link='y' link='url:https%3A%2F%2Ftestwp.gruparge.com%2Fdokumanlar%2Fkullanma-kilavuzlari%2F|target:_blank' 
+          apply_link='icon_title_button' dt_text_title='Kalite Sertifikaları' dt_text_custom_title_color='#ffffff' dt_text_desc='' show_btn='n' icon_picker='far fa-file-pdf' dt_text_icon_border_width='2px' 
+          dt_text_icon_color='#ffffff' el_class='urun-docs-links']
+      [/vc_column_inner]
+    [/vc_row_inner]
+  [/vc_column]
+[/vc_row]
+
+[vc_row]
+  [vc_column]
+    [vc_text_separator title='Teknik Özellikler']
+    [vc_column_text][acf field='teknik_ozellik_yazisi'][/vc_column_text]
+  [/vc_column]
+[/vc_row]
+[vc_row]
+  [vc_column]
+    [vc_text_separator title='Bağlantı Şemaları']
+    [vc_column_text]
+      [3d-flip-book id='7116'][/3d-flip-book]
+    [/vc_column_text]
+  [/vc_column]
+[/vc_row]
