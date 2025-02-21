@@ -1,152 +1,144 @@
+##########################
+# env_file:
+#     - .env
+
 services:
-  # sp-iot:
-  #   image: "erte33/sp-iot:latest"
-  #   restart: always
-  #   depends_on:
-  #     mysql:
-  #       condition: service_healthy
-  #     rabbitmq:
-  #       condition: service_healthy
-  #     # mongo:
-  #     #   condition: service_healthy
-  #   networks:
-  #     - spnet
-  #   ports:
-  #     - "4444:4444/tcp"
-  #     - "4444:4444/udp"
-  #     - "54739:54739/tcp"
-  #     - "54739:54739/udp"
-  #   environment:
-  #     RabbitMQ__HostName: rabbitmq
-  #     RabbitMQ__UserName: ${RABBITMQ_DEFAULT_USER}
-  #     RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
-  #     LogType__RabbitMQ: ${LogType__RabbitMQ}
-  #     LogType__File: ${LogType__File}
-  #     TZ: ${TZ}
-  #     ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306
-  #     ASPNETCORE_URLS: ${ASPNETCORE_URLS}
-  #     DOTNET_RUNNING_IN_CONTAINER: ${DOTNET_RUNNING_IN_CONTAINER}
-  #     DOTNET_VERSION: ${DOTNET_VERSION}
-  #     ASPNET_VERSION: ${ASPNET_VERSION}
-
-  # sp-websocket:
-  #   image: "erte33/sp-websocket:latest"
-  #   container_name: sp-websocket
-  #   restart: always
-  #   depends_on:
-  #     mysql:
-  #       condition: service_healthy
-  #     rabbitmq:
-  #       condition: service_healthy
-  #     mongo:
-  #       condition: service_healthy
-  #   networks:
-  #     - spnet
-  #   ports:
-  #     - "54738:5057"
-  #   environment:
-  #     RabbitMQ__HostName: rabbitmq
-  #     RabbitMQ__UserName: ${RABBITMQ_DEFAULT_USER}
-  #     RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
-  #     TZ: ${TZ}
-  #     ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306
-  #     ASPNETCORE_URLS: ${ASPNETCORE_URLS}
-  #     DOTNET_RUNNING_IN_CONTAINER: ${DOTNET_RUNNING_IN_CONTAINER}
-  #     DOTNET_VERSION: ${DOTNET_VERSION}
-  #     ASPNET_VERSION: ${ASPNET_VERSION}
-
-  # sp-rabbitmqtodb:
-  #   image: "erte33/sp-rabbitmqtodb:latest"
-  #   # restart: always
-  #   depends_on:
-  #     mysql:
-  #       condition: service_healthy
-  #     rabbitmq:
-  #       condition: service_healthy
-  #     mongo:
-  #       condition: service_healthy
-  #   networks:
-  #     - spnet
-  #   environment:
-  #     RabbitMQ__HostName: rabbitmq
-  #     RabbitMQ__UserName: ${RABBITMQ_DEFAULT_USER}
-  #     RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
-  #     RabbitMQ__PreFetchCount__mail: 10
-  #     RabbitMQ__PreFetchCount__modemlog: 1500
-  #     RabbitMQ__PreFetchCount__mysqlsingle: 10
-  #     RabbitMQ__PreFetchCount__mysqlbulk: 1000
-  #     RabbitMQ__PreFetchCount__mddbulk: 500
-  #     RabbitMQ__PreFetchCount__instantvaluesbulk: 500
-  #     RabbitMQ__PreFetchCount__exportindexbulk: 50
-  #     RabbitMQ__PreFetchCount__gprssignalqualitybulk: 50
-  #     RabbitMQ__PreFetchCount__harmonicsthdbulk: 50
-  #     RabbitMQ__PreFetchCount__harmonicscurrentspectrumbulk: 50
-  #     RabbitMQ__PreFetchCount__harmonicsvoltagespectrumbulk: 50
-  #     RabbitMQ__PreFetchCount__pvabulk: 500
-  #     RabbitMQ__PreFetchCount__pvasingle: 20
-  #     RabbitMQ__PreFetchCount__servicelog: 20
-  #     LogType__RabbitMQ: ${LogType__RabbitMQ}
-  #     LogType__File: ${LogType__File}
-  #     TZ: ${TZ}
-  #     ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306
-  #     ModemLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
-  #     ModemLogDatabaseSettings__DatabaseName: "SmartPowerLog"
-  #     ModemLogDatabaseSettings__ModemLogCollectionName: "ModemLog"
-  #     ServiceLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
-  #     ServiceLogDatabaseSettings__DatabaseName: "SmartPowerLog"
-  #     ServiceLogDatabaseSettings__ServiceLogCollectionName: "ServiceLog"
-  #     TsLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
-  #     TsLogDatabaseSettings__DatabaseName: "SmartPowerLog"
-  #     TsLogDatabaseSettings__TsLogCollectionName: "TsLog"
-  #     ASPNETCORE_URLS: ${ASPNETCORE_URLS}
-  #     DOTNET_RUNNING_IN_CONTAINER: ${DOTNET_RUNNING_IN_CONTAINER}
-  #     DOTNET_VERSION: ${DOTNET_VERSION}
-  #     ASPNET_VERSION: ${ASPNET_VERSION}
-
-  # sp-taskscheduler:
-  #   image: "erte33/sp-taskscheduler:latest"
-  #   # restart: always
-  #   depends_on:
-  #     mysql:
-  #       condition: service_healthy
-  #     rabbitmq:
-  #       condition: service_healthy
-  #     mongo:
-  #       condition: service_healthy
-  #   networks:
-  #     - spnet
-  #   environment:
-  #     TZ: ${TZ}
-  #     ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306
-  #     DOTNET_RUNNING_IN_CONTAINER: ${DOTNET_RUNNING_IN_CONTAINER}
-  #     DOTNET_VERSION: ${DOTNET_VERSION}
-  #     ASPNETCORE_URLS: ${ASPNETCORE_URLS}
-  #     ASPNET_VERSION: ${ASPNET_VERSION}
-  #     CheckCosa__CosaEndpointPath: /api/endpoints/getEndpoints
-  #     CheckCosa__CosaloginPath: /api/users/login
-  #     CheckCosa__CosaUrl: https://kiwi.cosa.com.tr
-  #     CheckRelayLockStatus__deviceSatusParamId: 48
-  #     CheckRelayLockStatus__lockedStatusValue: 4
-  #     CheckRelayLockStatus__relayLockedAlarmId: 21
-  #     iot_service_domain: http://sp-iot:4444
-  #     LogType__File: false
-  #     LogType__RabbitMQ: ${LogType__RabbitMQ}
-  #     PROXY_HOST: 192.168.1.1
-  #     PROXY_PORT: 8080
-  #     PROXY_SET: 0
-  #     RabbitMQ__HostName: rabbitmq
-  #     RabbitMQ__UserName: ${RABBITMQ_DEFAULT_USER}
-  #     RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
-  #     RabbitMQ__LogPath: tslog
-  #     REPORT_TIME_OUT: 30
-  #     XML_REPORT_SERVLET: http://www.biotekno.biz:8080/SMS-Web/xmlreport
-  #     XML_SENT_SERVLET: http://www.biotekno.biz:8080/SMS-Web/xmlsms
+  sp-iot:
+    image: "erte33/sp-iot:latest"
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    networks:
+      - spnet
+    ports:
+      - "4444:4444/tcp"
+      - "4444:4444/udp"
+      - "54739:54739/tcp"
+      - "54739:54739/udp"
+    environment:
+      RabbitMQ__HostName: rabbitmq
+      RabbitMQ__UserName: ${RABBITMQ_DEFAULT_USER}
+      RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
+      LogType__RabbitMQ: ${LogType__RabbitMQ}
+      LogType__File: ${LogType__File}
+      TZ: ${TZ}
+      ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      DOTNET_RUNNING_IN_CONTAINER: ${DOTNET_RUNNING_IN_CONTAINER}
+      DOTNET_VERSION: ${DOTNET_VERSION}
+      ASPNET_VERSION: ${ASPNET_VERSION}
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/4444' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 200
+      start_period: 30s
+  sp-websocket:
+    image: "erte33/sp-websocket:latest"
+    container_name: sp-websocket
+    restart: always
+    depends_on:
+      sp-iot:
+        condition: service_healthy
+    networks:
+      - spnet
+    ports:
+      - "54738:5057"
+    environment:
+      RabbitMQ__HostName: rabbitmq
+      RabbitMQ__UserName: ${RABBITMQ_DEFAULT_USER}
+      RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
+      TZ: ${TZ}
+      ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      DOTNET_RUNNING_IN_CONTAINER: ${DOTNET_RUNNING_IN_CONTAINER}
+      DOTNET_VERSION: ${DOTNET_VERSION}
+      ASPNET_VERSION: ${ASPNET_VERSION}
+  sp-rabbitmqtodb:
+    image: "erte33/sp-rabbitmqtodb:latest"
+    # restart: always
+    depends_on:
+      sp-iot:
+        condition: service_healthy
+    networks:
+      - spnet
+    environment:
+      RabbitMQ__HostName: rabbitmq
+      RabbitMQ__UserName: ${RABBITMQ_DEFAULT_USER}
+      RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
+      RabbitMQ__PreFetchCount__mail: 50
+      RabbitMQ__PreFetchCount__modemlog: 50
+      RabbitMQ__PreFetchCount__mysqlsingle: 50
+      RabbitMQ__PreFetchCount__mysqlbulk: 50
+      RabbitMQ__PreFetchCount__mddbulk: 50
+      RabbitMQ__PreFetchCount__instantvaluesbulk: 50
+      RabbitMQ__PreFetchCount__exportindexbulk: 50
+      RabbitMQ__PreFetchCount__gprssignalqualitybulk: 50
+      RabbitMQ__PreFetchCount__harmonicsthdbulk: 50
+      RabbitMQ__PreFetchCount__harmonicscurrentspectrumbulk: 50
+      RabbitMQ__PreFetchCount__harmonicsvoltagespectrumbulk: 50
+      RabbitMQ__PreFetchCount__pvabulk: 50
+      RabbitMQ__PreFetchCount__pvasingle: 50
+      TZ: ${TZ}
+      ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306;SslMode=none;
+      ModemLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
+      ModemLogDatabaseSettings__DatabaseName: "SmartPowerLog"
+      ModemLogDatabaseSettings__ModemLogCollectionName: "ModemLog"
+      ServiceLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
+      ServiceLogDatabaseSettings__DatabaseName: "SmartPowerLog"
+      ServiceLogDatabaseSettings__ServiceLogCollectionName: "ServiceLog"
+      TsLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
+      TsLogDatabaseSettings__DatabaseName: "SmartPowerLog"
+      TsLogDatabaseSettings__TsLogCollectionName: "TsLog"
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      DOTNET_RUNNING_IN_CONTAINER: ${DOTNET_RUNNING_IN_CONTAINER}
+      DOTNET_VERSION: ${DOTNET_VERSION}
+      ASPNET_VERSION: ${ASPNET_VERSION}
+  sp-taskscheduler:
+    image: "erte33/sp-taskscheduler:latest"
+    # restart: always
+    depends_on:
+      sp-iot:
+        condition: service_healthy
+    networks:
+      - spnet
+    environment:
+      TZ: ${TZ}
+      ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306
+      DOTNET_RUNNING_IN_CONTAINER: ${DOTNET_RUNNING_IN_CONTAINER}
+      DOTNET_VERSION: ${DOTNET_VERSION}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      ASPNET_VERSION: ${ASPNET_VERSION}
+      CheckCosa__CosaEndpointPath: /api/endpoints/getEndpoints
+      CheckCosa__CosaloginPath: /api/users/login
+      CheckCosa__CosaUrl: https://kiwi.cosa.com.tr
+      CheckRelayLockStatus__deviceSatusParamId: 48
+      CheckRelayLockStatus__lockedStatusValue: 4
+      CheckRelayLockStatus__relayLockedAlarmId: 21
+      iot_service_domain: http://sp-iot:4444
+      LogType__File: false
+      LogType__RabbitMQ: ${LogType__RabbitMQ}
+      PROXY_HOST: 192.168.1.1
+      PROXY_PORT: 8080
+      PROXY_SET: 0
+      RabbitMQ__HostName: rabbitmq
+      RabbitMQ__UserName: ${RABBITMQ_DEFAULT_USER}
+      RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
+      RabbitMQ__LogPath: tslog
+      REPORT_TIME_OUT: 30
+      XML_REPORT_SERVLET: http://www.biotekno.biz:8080/SMS-Web/xmlreport
+      XML_SENT_SERVLET: http://www.biotekno.biz:8080/SMS-Web/xmlsms
   mysql:
     image: mysql:8.0.33
     networks:
       - spnet
     command:
-      - --default-authentication-plugin=mysql_native_password
+      # - --default-authentication-plugin=mysql_native_password
       - --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
       # - --max_connections=1000
       - --skip-log-bin
@@ -163,11 +155,10 @@ services:
     cap_add:
       - SYS_NICE # CAP_SYS_NICE
     healthcheck:
-      # test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      test: ["CMD", "echo 'SELECT version();'| mysql"]
-      interval: 10s
-      timeout: 20s
-      retries: 10
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 20s
+      timeout: 5s
+      retries: 50
       start_period: 30s
   phpmyadmin:
     image: phpmyadmin
@@ -183,65 +174,71 @@ services:
       PMA_ARBITRARY: 1
       UPLOAD_LIMIT: 10M
       # PMA_HOST: db
-
-  # rabbitmq:
-  #   image: "rabbitmq:3-management"
-  #   depends_on:
-  #     mysql:
-  #       condition: service_healthy
-  #   networks:
-  #     - spnet
-  #   ports:
-  #     # - "5672:5672" # RabbitMQ port dışarı açmaya gerek yok
-  #     - "${RABBITMQ_UI_PORT}:15672" # RabbitMQ management UI port
-  #   environment:
-  #     RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE} # Özel bir erlang cookie belirleyin
-  #     RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER} # Kullanıcı adınızı belirleyin
-  #     RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS} # Şifrenizi belirleyin
-  #   volumes:
-  #     - sp-rabbitmq-data:/var/lib/rabbitmq # Verileri saklamak için bir volume oluşturun
-  #   healthcheck:
-  #     test: rabbitmq-diagnostics -q ping
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
-
-  # mongo:
-  #   image: mongo:4.4.25
-  #   restart: always
-  #   networks:
-  #     - spnet
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USER}
-  #     MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
-  #   volumes:
-  #     - sp-mongo-data:/data/db
-  #   healthcheck:
-  #     test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
-  #     start_period: 30s
-
-  # mongo-express:
-  #   image: mongo-express:0.54
-  #   # restart: always
-  #   depends_on:
-  #     mongo:
-  #       condition: service_healthy
-  #   container_name: sp-mongo-express
-  #   networks:
-  #     - spnet
-  #   ports:
-  #     - "${MONGO_EXPRESS_PORT}:8081"
-  #   environment:
-  #     ME_CONFIG_MONGODB_SERVER: mongo
-  #     ME_CONFIG_MONGODB_PORT: 27017
-  #     ME_CONFIG_MONGODB_ENABLE_ADMIN: true
-  #     ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGODB_ROOT_USER}
-  #     ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGODB_ROOT_PASSWORD}
-  #     ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USER}
-  #     ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD}
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    restart: always
+    # depends_on:
+    #   mysql:
+    #     condition: service_healthy
+    networks:
+      - spnet
+    ports:
+      # - "5672:5672" # RabbitMQ port dışarı açmaya gerek yok
+      - "${RABBITMQ_UI_PORT}:15672" # RabbitMQ management UI port
+    environment:
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE} # Özel bir erlang cookie belirleyin
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER} # Kullanıcı adınızı belirleyin
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS} # Şifrenizi belirleyin
+    volumes:
+      - sp-rabbitmq-data:/var/lib/rabbitmq # Verileri saklamak için bir volume oluşturun
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+  mongo:
+    image: mongo:8.0.5-rc2-noble
+    restart: always
+    ports:
+      - "4443:27017"
+    networks:
+      - spnet
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
+    volumes:
+      - sp-mongo-data:/var/lib/mysql
+    healthcheck:
+      test: >
+        mongosh --quiet --eval 'try { db.runCommand("ping").ok } catch(error) { exit(1) }'
+        --host localhost
+        --username ${MONGODB_ROOT_USER}
+        --password ${MONGODB_ROOT_PASSWORD}
+        --authenticationDatabase admin
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+  mongo-express:
+    image: mongo-express:1.0.2-20-alpine3.19
+    # restart: always
+    depends_on:
+      mongo:
+        condition: service_healthy
+    container_name: sp-mongo-express
+    networks:
+      - spnet
+    ports:
+      - "${MONGO_EXPRESS_PORT}:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: true
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGODB_ROOT_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGODB_ROOT_PASSWORD}
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USER}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD}
 networks:
   spnet:
     name: sp_mysql_cluster
