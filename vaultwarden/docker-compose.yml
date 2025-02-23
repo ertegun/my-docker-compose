@@ -1,0 +1,13 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: unless-stopped
+    environment:
+      DOMAIN: "https://vaultwarden.netvar.org"
+      WEBSOCKET_ENABLED: true
+      ADMIN_TOKEN: $$argon2id$$v=19$$m=65540,t=3,p=4$$/usQBkCxGkSMR07oPCr9hiGp5Gluh1BxCSiRapaD/eg$$RoJ5LDl42LaSRlh9nR5SMVmFg5XJMa/VfhR1nPMzMcA
+    volumes:
+      - ./vw-data/:/data/
+    ports:
+      - 80:80
