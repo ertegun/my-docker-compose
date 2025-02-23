@@ -1,6 +1,5 @@
-version: "3.2"
 services:
-  db:
+  mysql:
     image: mysql:8.0.33
     # container_name: db
     networks:
@@ -22,6 +21,11 @@ services:
       TZ: Asia/Istanbul
     cap_add:
       - SYS_NICE # CAP_SYS_NICE
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pmrrobot"]
+      interval: 20s
+      timeout: 5s
+      retries: 50
   phpmyadmin:
     image: phpmyadmin
     networks:
@@ -32,6 +36,9 @@ services:
     environment:
       PMA_ARBITRARY: 1
       PMA_HOST: db
+    depends_on:
+      mysql:
+        condition: service_healthy
 networks:
   network1:
     name: sp_mysql_cluster
