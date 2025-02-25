@@ -24,3 +24,4 @@ portainer/portainer_data
 vaultwarden/vw-data
 vaultwarden/syspass
 .vscode/sftp.json
+vaultwarden/.env
