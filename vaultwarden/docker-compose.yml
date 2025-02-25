@@ -5,9 +5,26 @@ services:
     restart: unless-stopped
     environment:
       DOMAIN: "https://vaultwarden.netvar.org"
-      WEBSOCKET_ENABLED: true
-      ADMIN_TOKEN: $$argon2id$$v=19$$m=65540,t=3,p=4$$/usQBkCxGkSMR07oPCr9hiGp5Gluh1BxCSiRapaD/eg$$RoJ5LDl42LaSRlh9nR5SMVmFg5XJMa/VfhR1nPMzMcA
+      WEBSOCKET_ENABLED: "true"
+      # SIGNUPS_ALLOWED: "false"
+      ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN}
+      # Ek güvenlik ayarları
+      ROCKET_WORKERS: 10
+      EXTENDED_LOGGING: "true"
+      LOG_LEVEL: warn
+      # Rate limiting ayarları
+      LOGIN_RATELIMIT_SECONDS: 60
+      LOGIN_RATELIMIT_MAX_BURST: 10
+      ADMIN_RATELIMIT_SECONDS: 300
+      ADMIN_RATELIMIT_MAX_BURST: 3
+      SQLITE_CACHE_SIZE: 8000 # SQLite önbellek boyutunu artırır
+      SQLITE_SYNCHRONOUS: 1 # Normal güvenilirlik ile daha iyi performans
     volumes:
       - ./vw-data/:/data/
     ports:
-      - 80:80
+      - "8011:80" # Nginx Proxy Manager üzerinden yönlendirme için
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/alive"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
