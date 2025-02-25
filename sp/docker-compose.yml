@@ -89,6 +89,19 @@ services:
       - spnet
     environment:
       <<: *dotnet-env
+      CheckCosa__CosaUrl: "https://kiwi.cosa.com.tr"
+      CheckCosa__CosaloginPath: "/api/users/login"
+      CheckCosa__CosaEndpointPath: "/api/endpoints/getEndpoints"
+      CheckRelayLockStatus__lockedStatusValue: "4"
+      CheckRelayLockStatus__deviceSatusParamId=: 48"
+      CheckRelayLockStatus__relayLockedAlarmId: "21"
+      PROXY_SET: "0"
+      PROXY_HOST: "192.168.1.1"
+      PROXY_PORT: "8080"
+      XML_SENT_SERVLET: "http://www.biotekno.biz:8080/SMS-Web/xmlsms"
+      XML_REPORT_SERVLET: "http://www.biotekno.biz:8080/SMS-Web/xmlreport"
+      REPORT_TIME_OUT: "30"
+      iot_service_domain: "http://sp-iot:4444"
   mysql:
     image: mysql:8.0.33
     networks:
@@ -147,7 +160,7 @@ services:
       retries: 5
       start_period: 20s
   mongo:
-    image: mongo:8.0.5-rc2-noble
+    image: mongo:4.4.25 #8.0.5-rc2-noble
     restart: always
     ports:
       - "4443:27017"
@@ -157,18 +170,13 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
     volumes:
-      - sp-mongo-data:/var/lib/mysql
+      - sp-mongo-data:/data/db
     healthcheck:
-      test: >
-        mongosh --quiet --eval 'try { db.runCommand("ping").ok } catch(error) { exit(1) }'
-        --host localhost
-        --username ${MONGODB_ROOT_USER}
-        --password ${MONGODB_ROOT_PASSWORD}
-        --authenticationDatabase admin
-      interval: 20s
+      test: ["CMD-SHELL", "mongo --quiet --eval 'db.runCommand({ ping: 1 }).ok' --host 127.0.0.1 -u ${MONGODB_ROOT_USER} -p ${MONGODB_ROOT_PASSWORD} --authenticationDatabase admin || exit 1"]
+      interval: 30s
       timeout: 10s
-      retries: 5
-      start_period: 40s
+      retries: 10
+      start_period: 10s
   mongo-express:
     image: mongo-express:1.0.2-20-alpine3.19
     depends_on:
