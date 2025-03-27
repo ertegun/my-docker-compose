@@ -25,3 +25,6 @@ vaultwarden/vw-data
 vaultwarden/syspass
 .vscode/sftp.json
 vaultwarden/.env
+linkwarden/.env
+linkwarden/data
+linkwarden/pgdata
