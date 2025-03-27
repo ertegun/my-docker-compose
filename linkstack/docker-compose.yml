@@ -1,0 +1,20 @@
+services:
+  linkstack:
+    hostname: "linkstack"
+    image: "linkstackorg/linkstack:latest"
+    environment:
+      TZ: "Europe/Istanbul"
+      SERVER_ADMIN: "ertegunfidan@gmail.com"
+      HTTP_SERVER_NAME: "linkstack.netvar.org"
+      HTTPS_SERVER_NAME: "linkstack.netvar.org"
+      LOG_LEVEL: "info"
+      PHP_MEMORY_LIMIT: "256M"
+      UPLOAD_MAX_FILESIZE: "8M"
+    volumes:
+      - linkstack_data:/htdocs
+    ports:
+      - 4775:80
+      - 20639:443
+    restart: unless-stopped
+volumes:
+  linkstack_data:
