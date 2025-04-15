@@ -1,0 +1,34 @@
+services:
+  proftpd:
+    image: proftpd/proftpd
+    container_name: proftpd
+    restart: always
+    ports:
+      - "21:21" # FTP portu
+    volumes:
+      - ./proftpd.conf:/etc/proftpd/proftpd.conf # ProFTPD konfigürasyon dosyası
+      - ./ftp-data:/home/ftpusers # FTP veri klasörü
+    environment:
+      - FTP_USER=ftpuser
+      - FTP_PASS=ftppassword
+      - FTP_HOME=/home/ftpusers
+
+  phpwebftp:
+    image: phpwebftp/phpwebftp
+    container_name: phpwebftp
+    restart: always
+    ports:
+      - "8080:80" # Web UI portu
+    volumes:
+      - ./phpwebftp:/var/www/html # phpWebFTP konfigürasyon dosyaları
+    environment:
+      - FTP_HOST=proftpd # ProFTPD konteyner ismi
+      - FTP_PORT=21 # FTP portu
+      - FTP_USER=ftpuser # FTP kullanıcı adı
+      - FTP_PASS=ftppassword # FTP kullanıcı şifresi
+    depends_on:
+      - proftpd
+
+networks:
+  default:
+    driver: bridge
