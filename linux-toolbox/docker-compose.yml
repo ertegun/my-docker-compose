@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  dpi_proxy:
+    build: .
+    container_name: dpi_proxy
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "3128:3128" # Proxy Portunu Açıyoruz
+    tty: true
+    restart: unless-stopped
