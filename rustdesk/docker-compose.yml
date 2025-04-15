@@ -1,0 +1,37 @@
+networks:
+  rustdesk-net:
+    external: false
+
+services:
+  hbbs:
+    container_name: Rustdesk-HBBS
+    ports:
+      - 21115:21115
+      - 21116:21116
+      - 21116:21116/udp
+      - 21118:21118
+    image: rustdesk/rustdesk-server
+    command: hbbs -r rustdesk.gruparge.com:21117
+    volumes:
+      - rustdeskhbbs:/root:rw
+    networks:
+      - rustdesk-net
+    depends_on:
+      - hbbr
+    restart: on-failure:5
+
+  hbbr:
+    container_name: Rustdesk-HBBR
+    ports:
+      - 21117:21117
+      - 21119:21119
+    image: rustdesk/rustdesk-server
+    command: hbbr
+    volumes:
+      - rustdeskhbbr:/root:rw
+    networks:
+      - rustdesk-net
+    restart: on-failure:5
+volumes:
+  rustdeskhbbs:
+  rustdeskhbbr:
