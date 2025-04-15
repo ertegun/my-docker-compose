@@ -1,12 +1,12 @@
 x-dotnet-env: &dotnet-env
   TZ: Europe/Istanbul
   DOTNET_RUNNING_IN_CONTAINER: true
-  DOTNET_VERSION: 9.0.2
-  ASPNET_VERSION: 9.0.2
+  DOTNET_VERSION: 9.0.3
+  ASPNET_VERSION: 9.0.3
   LogType__RabbitMQ__Status: true
   LogType__File__Status: false
   LogType__File__Path: "/var/log/sp-iot"
-  ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306;SslMode=none;
+  ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306;SslMode=none;default command timeout=2000;charset=utf8;AllowPublicKeyRetrieval=True
   RabbitMQ__HostName: rabbitmq
   RabbitMQ__UserName: ${RABBITMQ_DEFAULT_USER}
   RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
@@ -134,7 +134,7 @@ services:
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 30s
-      timeout: 5s
+      timeout: 30s
       retries: 10
       start_period: 10s
   phpmyadmin:
@@ -167,8 +167,8 @@ services:
     healthcheck:
       test: ["CMD", "rabbitmqctl", "status"]
       interval: 10s
-      timeout: 5s
-      retries: 5
+      timeout: 30s
+      retries: 10
       start_period: 20s
   mongo:
     image: mongo:4.4.25 #8.0.5-rc2-noble
@@ -185,7 +185,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "mongo --quiet --eval 'db.runCommand({ ping: 1 }).ok' --host 127.0.0.1 -u ${MONGODB_ROOT_USER} -p ${MONGODB_ROOT_PASSWORD} --authenticationDatabase admin || exit 1"]
       interval: 30s
-      timeout: 10s
+      timeout: 30s
       retries: 10
       start_period: 10s
   mongo-express:
