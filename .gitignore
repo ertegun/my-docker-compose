@@ -1,5 +1,5 @@
-sftpgo/.env
-sftpgo/sftpgohome/sftpgo.db
+sftpgo/sftpgodata/
+sftpgo/sftpgohome/
 libreoffice/.env
 minio/.env
 wordpress/.env
