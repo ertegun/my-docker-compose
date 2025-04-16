@@ -1,24 +1,30 @@
-version: "3.3"
 services:
   sftpgo:
     image: drakkan/sftpgo
     container_name: sftpgo
     volumes:
-      - ./sftpgohome:/var/lib/sftpgo
       - ./sftpgodata:/srv/sftpgo
+      - ./sftpgohome:/var/lib/sftpgo
     ports:
       - "8880:8080"
+      - "8082:8082" # WebDAV (opsiyonel)
+      - "8081:8081" # REST API (opsiyonel)
       - "2022:2022"
       - "2121:2121"
-      - "50000-50100:50000-50100"
+      - "50000-50010:50000-50010"
     environment:
-      SFTPGO_FTPD__BINDINGS__0__PORT: 2121
-      SFTPGO_FTPD__BINDINGS__0__FORCE_PASSIVE_IP: 193.192.105.122
-      SFTPGO_FTPD__PASSIVE_PORT_RANGE__START: 50000
-      SFTPGO_FTPD__PASSIVE_PORT_RANGE__END: 50010
-      SFTPGO_SFTPD__BINDINGS__0__PORT: 2022
-      SFTPGO_WEBDAVD__BINDINGS__0__PORT: 8081 # WebDAV da açalım
-      SFTPGO_COMMON__LOG_LEVEL: info # log seviyesi
-      SFTPGO_HTTPD__BINDINGS__0__PORT: 8080
+      #SFTPGO_FTPD__BINDINGS__0__PORT: 2121
+      #SFTPGO_FTPD__BINDINGS__0__FORCE_PASSIVE_IP: 5.253.142.66
+      #SFTPGO_FTPD__PASSIVE_PORT_RANGE__START: 50000
+      #SFTPGO_FTPD__PASSIVE_PORT_RANGE__END: 50010
+      #SFTPGO_SFTPD__BINDINGS__0__PORT: 2022
+      #SFTPGO_WEBDAVD__BINDINGS__0__PORT: 8081 # WebDAV da açalım
+      #SFTPGO_COMMON__LOG_LEVEL: info # log seviyesi
+      #SFTPGO_HTTPD__BINDINGS__0__PORT: 8080
       SFTPGO_HTTPD__BINDINGS__0__PROXY_HEADERS__0: "X-Forwarded-For"
       SFTPGO_HTTPD__BINDINGS__0__PROXY_HEADERS__1: "X-Real-IP"
+      SFTPGO_WEBDAVD__BINDINGS__0: 0.0.0.0:8082
+      SFTPGO_HTTPD__BINDINGS__0: 0.0.0.0:8080
+      SFTPGO_HTTPD__ENABLE_WEB_ADMIN: true
+      #SFTPGO_DEFAULT_ADMIN_USERNAME: admin
+      #SFTPGO_DEFAULT_ADMIN_PASSWORD: admin123
