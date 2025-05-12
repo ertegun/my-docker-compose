@@ -1,5 +1,5 @@
 # Node.js'in son sürümü temel alınarak bir Docker imajı oluşturun
-FROM node:slim
+FROM node:lts-alpine3.21
 # Uygulamanızın çalışacağı dizini oluşturun
 WORKDIR /app
 # Gerekli dosyaları kopyalayın
@@ -15,5 +15,7 @@ RUN npm install
 CMD ["npm", "start"]
 
 
-# docker build -t domain-router .
-# docker tag domain-router  erte33/ga-domain-router:latest
+# docker build -t gapps-express .
+# docker tag gapps-express  erte33/gapps-express:latest
+# docker push erte33/gapps-express:latest
+# docker run -d -p 6499:6499 erte33/gapps-express:latest
