@@ -2,7 +2,7 @@ version: "3.2"
 services:
   gapps:
     # build: .
-    image: erte33/gapps
+    image: erte33/gapps-express:latest
     volumes:
       - ./${SOURCE_PATH}/:/app/software
     # restart: always
