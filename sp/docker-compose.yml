@@ -152,7 +152,7 @@ services:
       UPLOAD_LIMIT: 10M
       # PMA_HOST: db
   rabbitmq:
-    image: "rabbitmq:3.13.7-management-alpine"
+    image: "rabbitmq:4.1.0-management-alpine"
     restart: always
     networks:
       - spnet
@@ -164,7 +164,7 @@ services:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     volumes:
-      - sp-rabbitmq-data:/var/lib/rabbitmq # Verileri saklamak için bir volume oluşturun
+      - sp-rabbitmq-data:/var/lib/rabbitmq
     healthcheck:
       test: ["CMD", "rabbitmqctl", "status"]
       interval: 10s
