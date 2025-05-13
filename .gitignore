@@ -28,3 +28,4 @@ vaultwarden/.env
 linkwarden/.env
 linkwarden/data
 linkwarden/pgdata
+gitea/.env
