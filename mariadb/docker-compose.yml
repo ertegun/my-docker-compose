@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: mariadb
+    restart: unless-stopped
+    environment:
+      MARIA_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
+      MARIA_DATABASE: ${MYSQL_DATABASE:-proje_db}
+      MARIA_USER: ${MYSQL_USER:-proje_kullanici}
+      MARIA_PASSWORD: ${MYSQL_PASSWORD:-kullanici_sifre}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./my.cnf:/etc/mysql/my.cnf:ro
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mariadb_data:
