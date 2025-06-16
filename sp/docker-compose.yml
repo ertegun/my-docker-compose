@@ -12,7 +12,7 @@ x-dotnet-env: &dotnet-env
   RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
 services:
   sp-iot:
-    image: "erte33/sp-iot:latest"
+    image: "docker.io/erte33/sp-iot:latest"
     restart: on-failure
     depends_on:
       mysql:
@@ -37,7 +37,7 @@ services:
       retries: 20
       start_period: 30s
   sp-websocket:
-    image: "erte33/sp-websocket:latest"
+    image: "docker.io/erte33/sp-websocket:latest"
     container_name: sp-websocket
     restart: always
     environment:
@@ -59,7 +59,7 @@ services:
     ports:
       - "54738:5057"
   sp-rabbitmqtodb:
-    image: "erte33/sp-rabbitmqtodb:latest"
+    image: "docker.io/erte33/sp-rabbitmqtodb:latest"
     restart: on-failure
     depends_on:
       sp-iot:
@@ -91,7 +91,7 @@ services:
     networks:
       - spnet
   sp-taskscheduler:
-    image: "erte33/sp-taskscheduler:latest"
+    image: "docker.io/erte33/sp-taskscheduler:latest"
     restart: on-failure
     depends_on:
       sp-iot:
@@ -114,7 +114,7 @@ services:
       REPORT_TIME_OUT: "30"
       iot_service_domain: "http://sp-iot:4444"
   mysql:
-    image: mysql:8.0.33
+    image: docker.io/mysql:8.0.33
     networks:
       - spnet
     command:
@@ -139,7 +139,7 @@ services:
       retries: 10
       start_period: 10s
   phpmyadmin:
-    image: phpmyadmin
+    image: docker.io/phpmyadmin
     depends_on:
       mysql:
         condition: service_healthy
@@ -152,7 +152,7 @@ services:
       UPLOAD_LIMIT: 10M
       # PMA_HOST: db
   rabbitmq:
-    image: "rabbitmq:4.1.0-management-alpine"
+    image: "docker.io/rabbitmq:4.1.0-management-alpine"
     restart: always
     networks:
       - spnet
@@ -172,7 +172,7 @@ services:
       retries: 10
       start_period: 20s
   mongo:
-    image: mongo:4.4.25 #8.0.5-rc2-noble
+    image: docker.io/mongo:4.4.25 #8.0.5-rc2-noble
     restart: always
     ports:
       - "4443:27017"
@@ -190,7 +190,7 @@ services:
       retries: 10
       start_period: 10s
   mongo-express:
-    image: mongo-express:1.0.2-20-alpine3.19
+    image: docker.io/mongo-express:1.0.2-20-alpine3.19
     depends_on:
       mongo:
         condition: service_healthy
