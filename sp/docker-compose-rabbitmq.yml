@@ -1,0 +1,25 @@
+services:
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    container_name: sp-rabbitmq
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == ubuntu1-local
+    networks:
+      - network1
+    ports:
+      # - "5672:5672" # RabbitMQ port
+      - "${RABBITMQ_UI_PORT}:15672" # RabbitMQ management UI port
+    environment:
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE} # Özel bir erlang cookie belirleyin
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER} # Kullanıcı adınızı belirleyin
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS} # Şifrenizi belirleyin
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq # Verileri saklamak için bir volume oluşturun
+networks:
+  network1:
+    name: sp_mysql_cluster
+    external: true
+volumes:
+  rabbitmqdata:
