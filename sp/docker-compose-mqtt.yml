@@ -1,0 +1,21 @@
+services:
+  sp-mqttserver:
+    image: erte33/sp-mqttserver:latest
+    container_name: sp-mqttserver
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == ubuntu1-local
+    restart: always
+    networks:
+      - network1
+    ports:
+      - "1883:1883"
+      - "1880:8080"
+    environment:
+      TZ: "Europe/Istanbul"
+      ConnectionStrings__Mysql: "${MYSQL_CONNECTION_STR}"
+networks:
+  network1:
+    name: sp_mysql_cluster
+    external: true
