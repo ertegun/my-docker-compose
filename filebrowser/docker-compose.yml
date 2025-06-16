@@ -3,7 +3,7 @@ services:
     image: filebrowser/filebrowser:s6
     container_name: filebrowser
     ports:
-      - "8080:80" # FileBrowser'a 8080 portu üzerinden erişim sağlanacak
+      - "8041:80" # FileBrowser'a 8080 portu üzerinden erişim sağlanacak
     volumes:
       - ./data:/srv # Kendi bilgisayarındaki `data` dizinini container'ın içindeki `/srv` dizinine bağla
       - filebrowser-db:/database # Veritabanı dosyasını saklamak için
