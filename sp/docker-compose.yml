@@ -35,7 +35,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 20
-      start_period: 30s
+      start_period: 60s
   sp-websocket:
     image: "docker.io/erte33/sp-websocket:latest"
     container_name: sp-websocket
@@ -104,7 +104,7 @@ services:
       CheckCosa__CosaloginPath: "/api/users/login"
       CheckCosa__CosaEndpointPath: "/api/endpoints/getEndpoints"
       CheckRelayLockStatus__lockedStatusValue: "4"
-      CheckRelayLockStatus__deviceSatusParamId=: 48"
+      CheckRelayLockStatus__deviceSatusParamId: "48"
       CheckRelayLockStatus__relayLockedAlarmId: "21"
       PROXY_SET: "0"
       PROXY_HOST: "192.168.1.1"
@@ -137,7 +137,7 @@ services:
       interval: 30s
       timeout: 30s
       retries: 10
-      start_period: 10s
+      # start_period: 5s
   phpmyadmin:
     image: docker.io/phpmyadmin
     depends_on:
@@ -150,7 +150,7 @@ services:
     environment:
       PMA_ARBITRARY: 1
       UPLOAD_LIMIT: 10M
-      # PMA_HOST: db
+      PMA_HOST: mysql
   rabbitmq:
     image: "docker.io/rabbitmq:4.1.0-management-alpine"
     restart: always
@@ -166,11 +166,14 @@ services:
     volumes:
       - sp-rabbitmq-data:/var/lib/rabbitmq
     healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
+      # test: ["CMD", "rabbitmqctl", "status"]
+      test: |
+        rabbitmq-diagnostics -q check_running && \
+        rabbitmq-diagnostics -q check_port_connectivity
       interval: 10s
       timeout: 30s
       retries: 10
-      start_period: 20s
+      # start_period: 5s
   mongo:
     image: docker.io/mongo:4.4.25 #8.0.5-rc2-noble
     restart: always
@@ -188,7 +191,7 @@ services:
       interval: 30s
       timeout: 30s
       retries: 10
-      start_period: 10s
+      # start_period: 10s
   mongo-express:
     image: docker.io/mongo-express:1.0.2-20-alpine3.19
     depends_on:
