@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Güncellemeler yükleniyor ve curl kuruluyor..."
-apt-get update && apt-get install -y curl
+# apt-get update && apt-get install -y curl
 
 WAITER_URL="http://waiter:8080"
 WAIT_INTERVAL=5
