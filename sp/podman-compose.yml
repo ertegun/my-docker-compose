@@ -182,6 +182,7 @@ services:
       ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USER}
       ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD}
   waiter:
+    image: docker.io/erte33/sp-waiter:latest
     build: ./waiter
     depends_on:
       - mysql
