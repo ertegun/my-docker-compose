@@ -1,29 +1,21 @@
+# docker build -t erte33/sp-php74-apache:prod -f ./docker/production/prod.Dockerfile .
+# docker build -t erte33/sp-php74-apache:prod -f ./docker/production/prod.Dockerfile .
 version: "3.2"
 services:
-  php:
-    image: erte33/sp-php74:latest
+  php-apache:
+    image: erte33/sp-php74-apache:prod
     restart: on-failure:3
-    env_file:
-      - .env
-    volumes:
-      - spweb-uploads:/application/uploads
-      - spweb-logs:/application/log/log_files
-      - spweb-paymentslogs:/application/payment/kuveytturk/xml
-    container_name: spweb-php
-    networks:
-      - network1
-  apache:
-    image: erte33/sp-apache:production
-    restart: on-failure:3
-    depends_on:
-      - php
     ports:
       - "${APACHE_PORT}:80"
     volumes:
-      - spweb-uploads:/application/uploads
-      - spweb-logs:/application/log/log_files
-      - spweb-paymentslogs:/application/payment/kuveytturk/xml
-    container_name: spweb-apache
+      # - ./:/var/www/html/
+      - spweb-log-volume:/var/www/html/log/log_files
+      - spweb-uploads-volume:/var/www/html/uploads
+      - spweb-customreport-volume:/var/www/html/customReport/files
+      - spweb-exportfiles-volume:/var/www/html/exportFiles
+    container_name: spweb-php-apache
+    env_file:
+      - .env
     networks:
       - network1
 networks:
@@ -31,6 +23,7 @@ networks:
     name: sp_mysql_cluster
     external: true
 volumes:
-  spweb-uploads:
-  spweb-logs:
-  spweb-paymentslogs:
+  spweb-log-volume:
+  spweb-uploads-volume:
+  spweb-customreport-volume:
+  spweb-exportfiles-volume:
