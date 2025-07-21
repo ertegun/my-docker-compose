@@ -12,11 +12,11 @@ x-dotnet-env: &dotnet-env
   RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
 services:
   php-apache:
-    image: docker.io/erte33/sp-php74-apache:prod
+    image: docker.io/erte33/sp-php74-apache:podman
     restart: on-failure:3
     network_mode: "host"
-    ports:
-      - "8080:80"
+    # ports:
+    # - "4447:4447"
     volumes:
       - spweb-log-volume:/var/www/html/log/log_files
       - spweb-uploads-volume:/var/www/html/uploads
