@@ -13,7 +13,7 @@ x-dotnet-env: &dotnet-env
 services:
   php-apache:
     image: docker.io/erte33/sp-php74-apache:podman
-    restart: on-failure:3
+    restart: always
     network_mode: "host"
     # ports:
     # - "4447:4447"
@@ -26,18 +26,18 @@ services:
       - .env.web
   sp-iot:
     image: "docker.io/erte33/sp-iot:latest"
-    restart: on-failure
+    restart: always
     network_mode: "host"
     depends_on:
       - waiter
     volumes:
       - ./entrypoint.sh:/App/entrypoint.sh:Z
     entrypoint: ["bash", "-c", "/App/entrypoint.sh 'IoT Device Manager.dll'"]
-    ports:
-      - "4444:4444/tcp"
-      - "4444:4444/udp"
-      - "54739:54739/tcp"
-      - "54739:54739/udp"
+    # ports:
+    #   - "4444:4444/tcp"
+    #   - "4444:4444/udp"
+    #   - "54739:54739/tcp"
+    #   - "54739:54739/udp"
     environment:
       <<: *dotnet-env
   sp-websocket:
@@ -63,7 +63,7 @@ services:
       - "54738:5057"
   sp-rabbitmqtodb:
     image: "docker.io/erte33/sp-rabbitmqtodb:latest"
-    restart: on-failure
+    restart: always
     network_mode: "host"
     volumes:
       - ./entrypoint.sh:/App/entrypoint.sh:Z
@@ -94,7 +94,7 @@ services:
       TsLogDatabaseSettings__TsLogCollectionName: "TsLog"
   sp-taskscheduler:
     image: "docker.io/erte33/sp-taskscheduler:latest"
-    restart: on-failure
+    restart: always
     network_mode: "host"
     volumes:
       - ./entrypoint.sh:/App/entrypoint.sh:Z
@@ -121,8 +121,8 @@ services:
       - --skip-log-bin
     restart: always
     network_mode: "host"
-    ports:
-      - ${MYSQL_PORT}:3306
+    # ports:
+    #   - ${MYSQL_PORT}:3306
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
@@ -136,8 +136,8 @@ services:
     image: docker.io/phpmyadmin
     depends_on:
       - mysql
-    ports:
-      - 4446:80
+    # ports:
+    #   - 4446:80
     network_mode: "host"
     environment:
       PMA_ARBITRARY: 1
@@ -147,9 +147,9 @@ services:
     image: "docker.io/rabbitmq:4.1.0-management-alpine"
     restart: always
     network_mode: "host"
-    ports:
-      # - "5672:5672" # RabbitMQ port dışarı açmaya gerek yok
-      - "${RABBITMQ_UI_PORT}:15672" # RabbitMQ management UI port
+    # ports:
+    #   # - "5672:5672" # RabbitMQ port dışarı açmaya gerek yok
+    #   - "${RABBITMQ_UI_PORT}:15672" # RabbitMQ management UI port
     environment:
       RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE}
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
@@ -160,8 +160,8 @@ services:
     image: docker.io/mongo:4.4.25 #8.0.5-rc2-noble
     restart: always
     network_mode: "host"
-    ports:
-      - "4443:27017"
+    # ports:
+    #   - "4443:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
@@ -173,8 +173,8 @@ services:
       - mongo
     container_name: sp-mongo-express
     network_mode: "host"
-    ports:
-      - "${MONGO_EXPRESS_PORT}:8081"
+    # ports:
+    #   - "${MONGO_EXPRESS_PORT}:8081"
     environment:
       ME_CONFIG_MONGODB_SERVER: ${MONGODB_HOST}
       ME_CONFIG_MONGODB_PORT: 27017
@@ -190,10 +190,10 @@ services:
       - mysql
       - mongo
       - rabbitmq
-    restart: on-failure
+    restart: always
     network_mode: "host"
-    ports:
-      - "8090:8080"
+    # ports:
+    #   - "8090:8080"
     environment:
       MYSQL_HOST: ${MYSQL_HOST}
       MONGODB_HOST: ${MONGODB_HOST}
