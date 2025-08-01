@@ -129,7 +129,7 @@ services:
       - ./entrypoint.sh:/App/entrypoint.sh:Z
     entrypoint: ["bash", "-c", "/App/entrypoint.sh Web.Server.dll"]
     environment:
-      Authorize__ClientRequired: true
+      Authorize__ClientRequired: false
       ConnectionStrings__Mysql: SERVER=${MYSQL_HOST};DATABASE=sp_mqtt_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306;SslMode=none;default command timeout=2000;charset=utf8;AllowPublicKeyRetrieval=True
       MQTT__Default__ClientId: ${MQTT_CLIENTID}
       MQTT__Default__Username: ${MQTT_USERNAME}
