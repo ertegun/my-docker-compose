@@ -20,3 +20,6 @@ RUN apk add --no-cache \
   && apk del gcc musl-dev libffi-dev openssl-dev python3-dev cargo build-base
 
 CMD ["python", "waiter.py"]
+
+
+# podman build -t docker.io/erte33/sp-waiter:latest .

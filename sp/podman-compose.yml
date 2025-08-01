@@ -10,6 +10,9 @@ x-dotnet-env: &dotnet-env
   RabbitMQ__HostName: ${RABBITMQ_HOST}
   RabbitMQ__UserName: ${RABBITMQ_DEFAULT_USER}
   RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
+  Mqtt__ClientId: ${MQTT_CLIENTID}
+  Mqtt__UserName: ${MQTT_USERNAME}
+  Mqtt__Password: ${MQTT_PASSWORD}
 services:
   php-apache:
     image: docker.io/erte33/sp-php74-apache:podman
@@ -18,10 +21,10 @@ services:
     # ports:
     # - "4447:4447"
     volumes:
-      - spweb-log-volume:/var/www/html/log/log_files
-      - spweb-uploads-volume:/var/www/html/uploads
-      - spweb-customreport-volume:/var/www/html/customReport/files
-      - spweb-exportfiles-volume:/var/www/html/exportFiles
+      - ./spweb-log-volume:/var/www/html/log/log_files
+      - ./spweb-uploads-volume:/var/www/html/uploads
+      - ./spweb-customreport-volume:/var/www/html/customReport/files
+      - ./spweb-exportfiles-volume:/var/www/html/exportFiles
     env_file:
       - .env.web
   sp-iot:
@@ -59,8 +62,8 @@ services:
     volumes:
       - ./entrypoint.sh:/App/entrypoint.sh:Z
     entrypoint: ["bash", "-c", "/App/entrypoint.sh GrupArGe.SmartPower.WebSocket.dll"]
-    ports:
-      - "54738:5057"
+    # ports:
+    #   - "54738:5057"
   sp-rabbitmqtodb:
     image: "docker.io/erte33/sp-rabbitmqtodb:latest"
     restart: always
@@ -114,6 +117,23 @@ services:
       XML_REPORT_SERVLET: "http://www.biotekno.biz:8080/SMS-Web/xmlreport"
       REPORT_TIME_OUT: "30"
       iot_service_domain: "http://sp-iot:4444"
+  sp-mqtt:
+    image: "docker.io/erte33/sp-mqttserver:latest"
+    container_name: sp-mqttserver
+    restart: always
+    network_mode: "host"
+    # ports:
+    #   - "1883:1883"
+    #   - "1880:8080"
+    volumes:
+      - ./entrypoint.sh:/App/entrypoint.sh:Z
+    entrypoint: ["bash", "-c", "/App/entrypoint.sh Web.Server.dll"]
+    environment:
+      Authorize__ClientRequired: true
+      ConnectionStrings__Mysql: SERVER=${MYSQL_HOST};DATABASE=sp_mqtt_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306;SslMode=none;default command timeout=2000;charset=utf8;AllowPublicKeyRetrieval=True
+      MQTT__Default__ClientId: ${MQTT_CLIENTID}
+      MQTT__Default__Username: ${MQTT_USERNAME}
+      MQTT__Default__Password: ${MQTT_PASSWORD}
   mysql:
     image: docker.io/mysql:8.0.33
     command:
@@ -129,7 +149,7 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       TZ: Europe/Istanbul
     volumes:
-      - sp-mysql8-data:/var/lib/mysql
+      - ./sp-mysql8-data:/var/lib/mysql:Z
     cap_add:
       - SYS_NICE # CAP_SYS_NICE
   phpmyadmin:
@@ -155,7 +175,7 @@ services:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     volumes:
-      - sp-rabbitmq-data:/var/lib/rabbitmq
+      - ./sp-rabbitmq-data:/var/lib/rabbitmq:Z
   mongo:
     image: docker.io/mongo:4.4.25 #8.0.5-rc2-noble
     restart: always
@@ -166,7 +186,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
     volumes:
-      - sp-mongo-data:/data/db
+      - ./sp-mongo-data:/data/db:Z
   mongo-express:
     image: docker.io/mongo-express:1.0.2-20-alpine3.19
     depends_on:
@@ -203,11 +223,11 @@ services:
       RABBITMQ_HOST: ${RABBITMQ_HOST}
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
-volumes:
-  sp-mysql8-data: null
-  sp-rabbitmq-data: null
-  sp-mongo-data: null
-  spweb-log-volume: null
-  spweb-uploads-volume: null
-  spweb-customreport-volume: null
-  spweb-exportfiles-volume: null
+# volumes:
+#   sp-mysql8-data: null
+#   sp-rabbitmq-data: null
+#   sp-mongo-data: null
+#   spweb-log-volume: null
+#   spweb-uploads-volume: null
+#   spweb-customreport-volume: null
+#   spweb-exportfiles-volume: null

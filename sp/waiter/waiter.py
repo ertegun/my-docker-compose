@@ -13,6 +13,7 @@ def check_mysql():
             host=os.environ.get("MYSQL_HOST", "mysql"),
             port=int(os.environ.get("MYSQL_PORT", 3306)),
             user=os.environ.get("MYSQL_ROOT_USER", "root"),
+            password=os.environ.get("MYSQL_ROOT_PASSWORD", "")
         )
         with conn.cursor() as cursor:
             cursor.execute("SELECT 1")
@@ -79,7 +80,7 @@ class WaitHandler(BaseHTTPRequestHandler):
             self.wfile.write(b"All services are up.\n")
 
 def run():
-    port = 8080
+    port = 4441
     server = HTTPServer(("", port), WaitHandler)
     print(f"Listening on port {port}")
     server.serve_forever()

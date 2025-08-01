@@ -3,7 +3,7 @@
 echo "Güncellemeler yükleniyor ve curl kuruluyor..."
 # apt-get update && apt-get install -y curl
 
-WAITER_URL="http://waiter:8080"
+WAITER_URL="http://localhost:4441"
 WAIT_INTERVAL=5
 
 # DLL parametresi alınıyor
