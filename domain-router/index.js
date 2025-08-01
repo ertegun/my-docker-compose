@@ -1,12 +1,13 @@
 const express = require("express");
 const app = express();
+const path = require("path");
+const fs = require("fs");
 
 app.get("/", (req, res) => {
   const domain = req.headers.host;
   console.log(req.headers.host);
   switch (domain) {
     case "gruparge.com":
-    case "localhost": //test
       return res.redirect(301, "https://www.gruparge.com");
       break;
     default:
@@ -16,35 +17,25 @@ app.get("/", (req, res) => {
   res.send("Hoş geldiniz!");
 });
 
+app.get("/get.php", (req, res) => {
+  const { pack } = req.query;
+  if (!pack) {
+    return res.status(400).send("Eksik parametre!");
+  }
+  // Dosya yolu
+  const filePath = path.join(__dirname, "meta.gruparge.com", "pack", `${pack}.pack`);
+  // Dosya var mı kontrol et
+  fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      return res.status(404).send("Dosya bulunamadı!");
+    }
+    res.download(filePath, `${pack}.pack`);
+  });
+});
+
 app.get("/:p1/:p2", (req, res) => {
   const { p1, p2 } = req.params;
   let address = `https://www.gruparge.com/${p1}/${p2}/`;
-
-  // switch (p2) {
-  //   case "rkrs":
-  //     switch (p1) {
-  //       case "en":
-  //         address = "https://www.gruparge.com/wp-content/uploads/2024/04/power-factor-controller-RKRS-user-manuel.pdf";
-  //         break;
-  //       default: //tr
-  //         address = "https://www.gruparge.com/wp-content/uploads/2023/05/reaktif-kontrol-rolesi-rkrs-kullanma-kilavuzu.pdf";
-  //         break;
-  //     }
-  //     break;
-  //   case "rkr":
-  //     switch (p1) {
-  //       case "en":
-  //         address = "https://www.gruparge.com/wp-content/uploads/2023/01/reagent-control-relay-rkr-user-manual.pdf";
-  //         break;
-  //       default: //tr
-  //         address = "https://www.gruparge.com/wp-content/uploads/2023/01/rkr-serisi-reaktif-guc-kontrol-rolesi-kullanim-kilavuzu.pdf";
-  //         break;
-  //     }
-  //     break;
-  //   default:
-  //     address = address;
-  //     break;
-  // }
   res.redirect(301, address);
 });
 
