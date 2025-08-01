@@ -8,6 +8,7 @@ services:
       - "9000:9000"
     network_mode: "host"
     volumes:
-      - ./portainer_data:/data:Z
+      - ./podman_portainer_data:/data:Z
+      - /run/user/1000/podman/podman.sock:/var/run/docker.sock
     environment:
       - EDGE_INSECURE_POLL=1
