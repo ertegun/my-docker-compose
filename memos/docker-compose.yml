@@ -3,6 +3,7 @@ services:
   memos:
     image: neosmemo/memos:stable
     command: --driver mysql --dsn 'root:password@tcp(mysql)/memos_prod'
+    restart: always
     ports:
       - "5230:5230"
     volumes:
