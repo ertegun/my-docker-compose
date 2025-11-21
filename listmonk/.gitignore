@@ -1,0 +1,20 @@
+# Environment files
+.env
+.env.local
+.env.production
+
+# Uploaded files
+uploads/*
+!uploads/.gitkeep
+
+# Logs
+logs/*
+!logs/.gitkeep
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
