@@ -1,37 +1,38 @@
+version: "3.8"
+
 networks:
   rustdesk-net:
-    external: false
-
+    driver: bridge
 services:
-  hbbs:
-    container_name: Rustdesk-HBBS
+  rustdesk-server:
+    image: lejianwen/rustdesk-server-s6:latest
+    container_name: rustdesk-all-in-one
+    hostname: rustdesk-server
+    environment:
+      - TZ=${TZ}
+      - RELAY=${RELAY_SERVER}
+      - ENCRYPTED_ONLY=${ENCRYPTED_ONLY}
+      - MUST_LOGIN=${MUST_LOGIN}
+      - RUSTDESK_API_RUSTDESK_ID_SERVER=${ID_SERVER}
+      - RUSTDESK_API_RUSTDESK_RELAY_SERVER=${RELAY_SERVER}
+      - RUSTDESK_API_RUSTDESK_API_SERVER=${API_SERVER}
+      - RUSTDESK_API_JWT_KEY=${JWT_KEY}
+      - RUSTDESK_API_LANG=${LANG}
+      - RUST_LOG=${RUST_LOG}
     ports:
-      - 21115:21115
-      - 21116:21116
-      - 21116:21116/udp
-      - 21118:21118
-    image: rustdesk/rustdesk-server
-    command: hbbs -r rustdesk.gruparge.com:21117
+      - "21114:21114" # API Server
+      - "21115:21115" # NAT test
+      - "21116:21116" # ID/Rendezvous server
+      - "21116:21116/udp"
+      - "21117:21117" # Relay server
+      - "21118:21118" # WebSocket
+      - "21119:21119" # File transfer
     volumes:
-      - rustdeskhbbs:/root:rw
+      - rustdesk-data:/data
+      - rustdesk-api-data:/app/data
+      - ./logs:/app/logs
     networks:
       - rustdesk-net
-    depends_on:
-      - hbbr
-    restart: on-failure:5
-
-  hbbr:
-    container_name: Rustdesk-HBBR
-    ports:
-      - 21117:21117
-      - 21119:21119
-    image: rustdesk/rustdesk-server
-    command: hbbr
-    volumes:
-      - rustdeskhbbr:/root:rw
-    networks:
-      - rustdesk-net
-    restart: on-failure:5
 volumes:
-  rustdeskhbbs:
-  rustdeskhbbr:
+  rustdesk-data:
+  rustdesk-api-data:

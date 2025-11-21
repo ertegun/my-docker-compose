@@ -1,0 +1,38 @@
+# Environment files
+.env
+.env.local
+
+# Backup files
+backups/
+*.backup
+*.tar.gz
+
+# Log files
+logs/
+*.log
+dev-logs/
+
+# Docker
+.docker/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# RustDesk specific
+*.key
+*.pem
+rustdesk-data/
+rustdesk-api-data/
