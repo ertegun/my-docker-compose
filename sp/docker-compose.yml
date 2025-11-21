@@ -1,3 +1,7 @@
+x-mysql-connections: &mysql-connections
+  mysql-main: &mysql-main-connection "SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306;SslMode=none;default command timeout=2000;charset=utf8;AllowPublicKeyRetrieval=True"
+  mysql-mqtt: &mysql-mqtt-connection "SERVER=mysql;DATABASE=sp_mqtt_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306;SslMode=none;default command timeout=2000;charset=utf8;AllowPublicKeyRetrieval=True"
+
 x-dotnet-env: &dotnet-env
   TZ: Europe/Istanbul
   DOTNET_RUNNING_IN_CONTAINER: true
@@ -6,69 +10,89 @@ x-dotnet-env: &dotnet-env
   LogType__RabbitMQ__Status: true
   LogType__File__Status: false
   LogType__File__Path: "/var/log/sp-iot"
-  ConnectionStrings__Mysql: SERVER=mysql;DATABASE=smartpower_db;UiD=root;PASSWORD=${MYSQL_ROOT_PASSWORD};PORT=3306;SslMode=none;default command timeout=2000;charset=utf8;AllowPublicKeyRetrieval=True
+  ConnectionStrings__Mysql: *mysql-main-connection
+
+x-rabbitmq-settings: &rabbitmq-settings
   RabbitMQ__HostName: rabbitmq
   RabbitMQ__UserName: ${RABBITMQ_DEFAULT_USER}
   RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
+
+x-mqtt-credentials: &mqtt-credentials
+  mqtt-client-id: &mqtt-client-id ${MQTT_CLIENTID}
+  mqtt-username: &mqtt-username ${MQTT_USERNAME}
+  mqtt-password: &mqtt-password ${MQTT_PASSWORD}
+
+x-mqtt-settings: &mqtt-settings
+  Mqtt__ClientId: *mqtt-client-id
+  Mqtt__UserName: *mqtt-username
+  Mqtt__Password: *mqtt-password
+  Mqtt__BrokerAddress: ${MQTT_BROKER_ADDRESS:-sp-mqtt}
+  Mqtt__BrokerPort: ${MQTT_BROKER_PORT:-1883}
+
+x-mqtt-server-settings: &mqtt-server-settings
+  MQTT__Default__ClientId: *mqtt-client-id
+  MQTT__Default__Username: *mqtt-username
+  MQTT__Default__Password: *mqtt-password
+
+x-mongodb-settings: &mongodb-settings
+  ModemLogDatabaseSettings__ConnectionString: &mongodb-connection mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
+  ServiceLogDatabaseSettings__ConnectionString: *mongodb-connection
+  TsLogDatabaseSettings__ConnectionString: *mongodb-connection
+  ModemLogDatabaseSettings__DatabaseName: &mongodb-db-name "SmartPowerLog"
+  ServiceLogDatabaseSettings__DatabaseName: *mongodb-db-name
+  TsLogDatabaseSettings__DatabaseName: *mongodb-db-name
+  ModemLogDatabaseSettings__ModemLogCollectionName: "ModemLog"
+  ServiceLogDatabaseSettings__ServiceLogCollectionName: "ServiceLog"
+  TsLogDatabaseSettings__TsLogCollectionName: "TsLog"
+
+x-common-healthcheck: &common-healthcheck
+  interval: 30s
+  timeout: 30s
+  retries: 10
+
+x-common-service: &common-service
+  restart: always
+  networks:
+    - spnet
+
+x-db-dependencies: &db-dependencies
+  depends_on:
+    mysql:
+      condition: service_healthy
+    rabbitmq:
+      condition: service_healthy
+    mongo:
+      condition: service_healthy
 services:
   sp-iot:
+    <<: [*common-service, *db-dependencies]
     image: "docker.io/erte33/sp-iot:latest"
-    restart: on-failure
-    depends_on:
-      mysql:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-      mongo:
-        condition: service_healthy
-    networks:
-      - spnet
     ports:
       - "4444:4444/tcp"
       - "4444:4444/udp"
       - "54739:54739/tcp"
       - "54739:54739/udp"
     environment:
-      <<: *dotnet-env
+      <<: [*dotnet-env, *rabbitmq-settings, *mqtt-settings]
     healthcheck:
+      <<: *common-healthcheck
       test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/4444' || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 20
-      start_period: 60s
+      start_period: 30s
+
   sp-websocket:
+    <<: [*common-service, *db-dependencies]
     image: "docker.io/erte33/sp-websocket:latest"
     container_name: sp-websocket
-    restart: always
-    environment:
-      <<: *dotnet-env
-      ModemLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
-      ServiceLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
-      TsLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
-      ModemLogDatabaseSettings__DatabaseName: "SmartPowerLog"
-      ServiceLogDatabaseSettings__DatabaseName: "SmartPowerLog"
-      TsLogDatabaseSettings__DatabaseName: "SmartPowerLog"
-      ModemLogDatabaseSettings__ModemLogCollectionName: "ModemLog"
-      ServiceLogDatabaseSettings__ServiceLogCollectionName: "ServiceLog"
-      TsLogDatabaseSettings__TsLogCollectionName: "TsLog"
-    depends_on:
-      sp-iot:
-        condition: service_healthy
-    networks:
-      - spnet
     ports:
       - "54738:5057"
-  sp-rabbitmqtodb:
-    image: "docker.io/erte33/sp-rabbitmqtodb:latest"
-    restart: on-failure
-    depends_on:
-      sp-iot:
-        condition: service_healthy
     environment:
-      <<: *dotnet-env
-      ModemLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
-      ServiceLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
-      TsLogDatabaseSettings__ConnectionString: mongodb://${MONGODB_ROOT_USER}:${MONGODB_ROOT_PASSWORD}@mongo:27017
+      <<: [*dotnet-env, *rabbitmq-settings, *mqtt-settings, *mongodb-settings]
+
+  sp-rabbitmqtodb:
+    <<: [*common-service, *db-dependencies]
+    image: "docker.io/erte33/sp-rabbitmqtodb:latest"
+    environment:
+      <<: [*dotnet-env, *rabbitmq-settings, *mqtt-settings, *mongodb-settings]
       RabbitMQ__PreFetchCount__mail: 5
       RabbitMQ__PreFetchCount__modemlog: 5
       RabbitMQ__PreFetchCount__mysqlsingle: 1
@@ -82,24 +106,12 @@ services:
       RabbitMQ__PreFetchCount__harmonicsvoltagespectrumbulk: 5
       RabbitMQ__PreFetchCount__pvabulk: 5
       RabbitMQ__PreFetchCount__pvasingle: 1
-      ModemLogDatabaseSettings__DatabaseName: "SmartPowerLog"
-      ServiceLogDatabaseSettings__DatabaseName: "SmartPowerLog"
-      TsLogDatabaseSettings__DatabaseName: "SmartPowerLog"
-      ModemLogDatabaseSettings__ModemLogCollectionName: "ModemLog"
-      ServiceLogDatabaseSettings__ServiceLogCollectionName: "ServiceLog"
-      TsLogDatabaseSettings__TsLogCollectionName: "TsLog"
-    networks:
-      - spnet
+
   sp-taskscheduler:
+    <<: [*common-service, *db-dependencies]
     image: "docker.io/erte33/sp-taskscheduler:latest"
-    restart: on-failure
-    depends_on:
-      sp-iot:
-        condition: service_healthy
-    networks:
-      - spnet
     environment:
-      <<: *dotnet-env
+      <<: [*dotnet-env, *rabbitmq-settings, *mqtt-settings]
       CheckCosa__CosaUrl: "https://kiwi.cosa.com.tr"
       CheckCosa__CosaloginPath: "/api/users/login"
       CheckCosa__CosaEndpointPath: "/api/endpoints/getEndpoints"
@@ -113,14 +125,22 @@ services:
       XML_REPORT_SERVLET: "http://www.biotekno.biz:8080/SMS-Web/xmlreport"
       REPORT_TIME_OUT: "30"
       iot_service_domain: "http://sp-iot:4444"
+
+  sp-mqtt:
+    <<: [*common-service, *db-dependencies]
+    image: "docker.io/erte33/sp-mqttserver:latest"
+    ports:
+      - "1883:1883"
+    environment:
+      Authorize__ClientRequired: false
+      ConnectionStrings__Mysql: *mysql-mqtt-connection
+      <<: *mqtt-server-settings
   mysql:
+    <<: *common-service
     image: docker.io/mysql:8.0.33
-    networks:
-      - spnet
     command:
       - --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
       - --skip-log-bin
-    restart: always
     ports:
       - ${MYSQL_PORT}:3306
     environment:
@@ -131,33 +151,28 @@ services:
     volumes:
       - sp-mysql8-data:/var/lib/mysql
     cap_add:
-      - SYS_NICE # CAP_SYS_NICE
+      - SYS_NICE
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
-      interval: 30s
-      timeout: 30s
-      retries: 10
-      # start_period: 5s
+      <<: *common-healthcheck
+      test: ["CMD-SHELL", "mysql -h localhost -uroot -p${MYSQL_ROOT_PASSWORD} -e 'SELECT 1'"]
+
   phpmyadmin:
+    <<: *common-service
     image: docker.io/phpmyadmin
     depends_on:
       mysql:
         condition: service_healthy
-    networks:
-      - spnet
     ports:
       - 4446:80
     environment:
-      PMA_ARBITRARY: 1
+      # PMA_ARBITRARY: 1 #başka sunucuya bağlanmak için
       UPLOAD_LIMIT: 10M
       PMA_HOST: mysql
+
   rabbitmq:
+    <<: *common-service
     image: "docker.io/rabbitmq:4.1.0-management-alpine"
-    restart: always
-    networks:
-      - spnet
     ports:
-      # - "5672:5672" # RabbitMQ port dışarı açmaya gerek yok
       - "${RABBITMQ_UI_PORT}:15672" # RabbitMQ management UI port
     environment:
       RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE}
@@ -166,40 +181,30 @@ services:
     volumes:
       - sp-rabbitmq-data:/var/lib/rabbitmq
     healthcheck:
-      # test: ["CMD", "rabbitmqctl", "status"]
-      test: |
-        rabbitmq-diagnostics -q check_running && \
-        rabbitmq-diagnostics -q check_port_connectivity
-      interval: 10s
-      timeout: 30s
-      retries: 10
-      # start_period: 5s
+      <<: *common-healthcheck
+      test: ["CMD-SHELL", "rabbitmqctl status && rabbitmqctl list_queues || exit 1"]
+
   mongo:
+    <<: *common-service
     image: docker.io/mongo:4.4.25 #8.0.5-rc2-noble
-    restart: always
     ports:
       - "4443:27017"
-    networks:
-      - spnet
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
     volumes:
       - sp-mongo-data:/data/db
     healthcheck:
+      <<: *common-healthcheck
       test: ["CMD-SHELL", "mongo --quiet --eval 'db.runCommand({ ping: 1 }).ok' --host 127.0.0.1 -u ${MONGODB_ROOT_USER} -p ${MONGODB_ROOT_PASSWORD} --authenticationDatabase admin || exit 1"]
-      interval: 30s
-      timeout: 30s
-      retries: 10
-      # start_period: 10s
+
   mongo-express:
+    <<: *common-service
     image: docker.io/mongo-express:1.0.2-20-alpine3.19
+    container_name: sp-mongo-express
     depends_on:
       mongo:
         condition: service_healthy
-    container_name: sp-mongo-express
-    networks:
-      - spnet
     ports:
       - "${MONGO_EXPRESS_PORT}:8081"
     environment:
