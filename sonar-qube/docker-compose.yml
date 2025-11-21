@@ -1,0 +1,54 @@
+version: "3"
+
+services:
+  # 1. PostgreSQL Veritabanı Servisi
+  # SonarQube, gömülü H2 veritabanını Production ortamında önermediği için PostgreSQL kullanıyoruz.
+  db:
+    image: postgres:15-alpine
+    container_name: sonarqube_db
+    restart: always
+    environment:
+      # Veritabanı adı, kullanıcı adı ve şifresi (LÜTFEN GÜVENLİĞİNİZ İÇİN ŞİFRELERİ DEĞİŞTİRİN!)
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar_password_very_secret
+      - POSTGRES_DB=sonarqube
+    volumes:
+      # Veritabanı verilerini kalıcı hale getirmek için volume kullanıyoruz.
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - sonarnet
+
+  # 2. SonarQube Community Edition Servisi
+  sonarqube:
+    image: sonarqube:community
+    container_name: sonarqube_app
+    restart: always
+    depends_on:
+      - db
+    ports:
+      # SonarQube Web Arayüzü için 9000 portunu dışarıya açıyoruz.
+      - "9009:9000"
+    environment:
+      # Veritabanı bağlantı ayarları
+      - SONARQUBE_JDBC_URL=jdbc:postgresql://db:5432/sonarqube
+      - SONARQUBE_JDBC_USERNAME=sonar
+      - SONARQUBE_JDBC_PASSWORD=sonar_password_very_secret
+    volumes:
+      # Ayarlar, eklentiler ve loglar için kalıcı depolama
+      - sonarqube_conf:/opt/sonarqube/conf
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
+    networks:
+      - sonarnet
+volumes:
+  postgres_data:
+    driver: local
+  sonarqube_conf:
+    driver: local
+  sonarqube_data:
+    driver: local
+  sonarqube_logs:
+    driver: local
+networks:
+  sonarnet:
+    driver: bridge
