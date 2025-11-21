@@ -1,0 +1,13 @@
+services:
+  beszel:
+    image: henrygd/beszel:latest
+    container_name: beszel
+    restart: unless-stopped
+    ports:
+      - 8090:8090
+    volumes:
+      - ./beszel_data:/beszel_data
+      - ./beszel_socket:/beszel_socket
+    environment:
+      USER_EMAIL: ${USER_EMAIL:- admin@admin.com
+      USER_PASSWORD: ${USER_PASSWORD:- admin123}

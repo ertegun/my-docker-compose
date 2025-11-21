@@ -29,3 +29,6 @@ linkwarden/.env
 linkwarden/data
 linkwarden/pgdata
 gitea/.env
+beszel/.env
+beszel/beszel_data
+beszel/beszel_agent_data
