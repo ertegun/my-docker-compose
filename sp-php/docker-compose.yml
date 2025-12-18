@@ -1,23 +1,24 @@
-# docker build -t erte33/sp-php74-apache:prod -f ./docker/production/prod.Dockerfile .
-# docker build -t erte33/sp-php74-apache:prod -f ./docker/production/prod.Dockerfile .
-version: "3.2"
 services:
   php-apache:
-    image: erte33/sp-php74-apache:prod
-    restart: on-failure:3
+    container_name: spweb-php-apache-production
+    image: erte33/spweb-php74fpm-apache:production
+    restart: always
     ports:
-      - "${APACHE_PORT}:80"
+      - "${APACHE_PORT}:4447"
     volumes:
-      # - ./:/var/www/html/
       - spweb-log-volume:/var/www/html/log/log_files
       - spweb-uploads-volume:/var/www/html/uploads
       - spweb-customreport-volume:/var/www/html/customReport/files
       - spweb-exportfiles-volume:/var/www/html/exportFiles
-    container_name: spweb-php-apache
     env_file:
       - .env
     networks:
       - network1
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 networks:
   network1:
     name: sp_mysql_cluster
