@@ -5,8 +5,8 @@ x-mysql-connections: &mysql-connections
 x-dotnet-env: &dotnet-env
   TZ: Europe/Istanbul
   DOTNET_RUNNING_IN_CONTAINER: true
-  DOTNET_VERSION: 9.0.6
-  ASPNET_VERSION: 9.0.6
+  DOTNET_VERSION: 9.0.11
+  ASPNET_VERSION: 9.0.11
   LogType__RabbitMQ__Status: true
   LogType__File__Status: false
   LogType__File__Path: "/var/log/sp-iot"
