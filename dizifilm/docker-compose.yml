@@ -125,14 +125,6 @@ services:
   prowlarr:
     container_name: prowlarr
     image: lscr.io/linuxserver/prowlarr:latest
-
-    # Uncomment below if vpn is enabled
-    # depends_on:               # Uncomment this line if vpn is enabled
-    #   - vpn                   # Uncomment this line if vpn is enabled
-    # network_mode: service:vpn # Uncomment this line if vpn is enabled
-
-    # Uses default network
-
     environment:
       - PUID=1000
       - PGID=1000
