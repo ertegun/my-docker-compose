@@ -45,6 +45,14 @@ x-mongodb-settings: &mongodb-settings
   ServiceLogDatabaseSettings__ServiceLogCollectionName: "ServiceLog"
   TsLogDatabaseSettings__TsLogCollectionName: "TsLog"
 
+x-smtp-settings: &smtp-settings
+  SmtpSettings__DisplayName: ${SMTP_DISPLAY_NAME}
+  SmtpSettings__EnableSsl: ${SMTP_ENABLE_SSL}
+  SmtpSettings__Host: ${SMTP_HOST}
+  SmtpSettings__Port: ${SMTP_PORT}
+  SmtpSettings__Sender: ${SMTP_SENDER}
+  SmtpSettings__Password: ${SMTP_PASSWORD}
+
 x-common-healthcheck: &common-healthcheck
   interval: 30s
   timeout: 30s
@@ -73,7 +81,7 @@ services:
       - "54739:54739/tcp"
       - "54739:54739/udp"
     environment:
-      <<: [*dotnet-env, *rabbitmq-settings, *mqtt-settings]
+      <<: [*dotnet-env, *rabbitmq-settings, *mqtt-settings, *smtp-settings]
     healthcheck:
       <<: *common-healthcheck
       test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/4444' || exit 1"]
@@ -111,7 +119,7 @@ services:
     <<: [*common-service, *db-dependencies]
     image: "docker.io/erte33/sp-taskscheduler:latest"
     environment:
-      <<: [*dotnet-env, *rabbitmq-settings, *mqtt-settings]
+      <<: [*dotnet-env, *rabbitmq-settings, *mqtt-settings, *smtp-settings]
       CheckCosa__CosaUrl: "https://kiwi.cosa.com.tr"
       CheckCosa__CosaloginPath: "/api/users/login"
       CheckCosa__CosaEndpointPath: "/api/endpoints/getEndpoints"
