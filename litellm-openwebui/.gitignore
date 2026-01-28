@@ -1,0 +1,13 @@
+# Environment variables - DO NOT COMMIT
+.env
+
+# Data directories
+litellm_db_data/
+open-webui/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

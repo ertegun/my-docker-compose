@@ -1,0 +1,75 @@
+model_list:
+  - model_name: "GPT-5.2 (En Güncel - Güçlü)"
+    litellm_params:
+      model: openai/gpt-5.2
+      api_key: os.environ/OPENAI_API_KEY
+  - model_name: "GPT-5.1 (Gelişmiş)"
+    litellm_params:
+      model: openai/gpt-5.1
+      api_key: os.environ/OPENAI_API_KEY
+  - model_name: "GPT-5-Turbo (Hızlı - Ucuz)"
+    litellm_params:
+      model: openai/gpt-5-turbo
+      api_key: os.environ/OPENAI_API_KEY
+  - model_name: "Sora-2 (Video Generation)"
+    litellm_params:
+      model: openai/sora-2
+      api_key: os.environ/OPENAI_API_KEY
+  - model_name: "DALL-E 3 (Image Generation)"
+    litellm_params:
+      model: openai/dall-e-3
+      api_key: os.environ/OPENAI_API_KEY
+  - model_name: "Llama-3.3-70b (Groq - Tavsiye Edilen)"
+    litellm_params:
+      model: groq/llama-3.3-70b-versatile
+      api_key: os.environ/GROQ_API_KEY
+  - model_name: "Llama-3.1-8b (Groq - Hızlı)"
+    litellm_params:
+      model: groq/llama-3.1-8b-instant
+      api_key: os.environ/GROQ_API_KEY
+  - model_name: "Gemini 2.0 Flash (En Güncel - Ucuz)"
+    litellm_params:
+      model: gemini/gemini-2.0-flash
+      api_key: os.environ/GEMINI_API_KEY
+  - model_name: "Gemini 2.0 Pro (Video Generation)"
+    litellm_params:
+      model: gemini/gemini-2.0-pro
+      api_key: os.environ/GEMINI_API_KEY
+
+  - model_name: "Claude 4.5 Opus (En Yeni - Güçlü)"
+    litellm_params:
+      model: anthropic/claude-opus-4-5
+      api_key: os.environ/ANTHROPIC_API_KEY
+      cache_control_injection_points:
+        - location: message
+          role: system
+  - model_name: "Claude 4.5 Haiku"
+    litellm_params:
+      model: anthropic/claude-haiku-4-5
+      api_key: os.environ/ANTHROPIC_API_KEY
+      cache_control_injection_points:
+        - location: message
+          role: system
+  - model_name: "Claude Sonnet 4.5"
+    litellm_params:
+      model: anthropic/claude-sonnet-4-5
+      api_key: os.environ/ANTHROPIC_API_KEY
+      cache_control_injection_points:
+        - location: message
+          role: system
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+  database_type: "postgres"
+
+litellm_settings:
+  cache: true
+  cache_params:
+    type: redis
+    host: os.environ/REDIS_HOST
+    port: os.environ/REDIS_PORT
+    password: os.environ/REDIS_PASSWORD
+    db: 0
+  streaming_response_cache_ttl: 3600
+  completion_cache_ttl: 3600
+  success_callback: ["langfuse"]

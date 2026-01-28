@@ -1,0 +1,64 @@
+services:
+  # 1. Veri Tabanı: LiteLLM'in logları ve kullanıcı bütçelerini tutması için
+  litellm-db:
+    image: postgres:16-alpine
+    container_name: litellm-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - litellm_db_data:/var/lib/postgresql/data
+
+  # 2. Redis: Cache için
+  redis:
+    image: redis:7-alpine
+    container_name: litellm-redis
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+
+  # 3. LiteLLM Gateway: Token takibi ve bütçeleme burada döner
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: litellm
+    ports:
+      - "3004:3004"
+    volumes:
+      - ./litellm-config.yaml:/app/config.yaml
+    depends_on:
+      - litellm-db
+      - redis
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    command: ["--config", "/app/config.yaml", "--port", "3004"]
+
+  # 4. Open WebUI: Kullanıcı arayüzü
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    ports:
+      - "3003:8080"
+    environment:
+      - "OPENAI_API_BASE_URL=http://litellm:4000/v1"
+      - "OPENAI_API_KEY=${LITELLM_MASTER_KEY}"
+      - "WEBUI_SECRET_KEY=${OPENWEBUI_SECRET_KEY}"
+    volumes:
+      - open-webui:/app/backend/data
+    depends_on:
+      - litellm
+
+volumes:
+  litellm_db_data:
+  redis_data:
+  open-webui:
