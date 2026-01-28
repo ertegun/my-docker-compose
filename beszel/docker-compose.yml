@@ -9,5 +9,7 @@ services:
       - ./beszel_data:/beszel_data
       - ./beszel_socket:/beszel_socket
     environment:
-      USER_EMAIL: ${USER_EMAIL:- admin@admin.com
+      USER_EMAIL: ${USER_EMAIL:- admin@admin.com}
       USER_PASSWORD: ${USER_PASSWORD:- admin123}
+      USER_CREATION: "true"
+      TZ: Europe/Istanbul
