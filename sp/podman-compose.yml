@@ -176,6 +176,7 @@ services:
       UPLOAD_LIMIT: 10M
       PMA_HOST: ${MYSQL_HOST}
       APACHE_PORT: 8080
+      HIDE_PHP_VERSION: true
 
   rabbitmq:
     <<: *common-podman-service
